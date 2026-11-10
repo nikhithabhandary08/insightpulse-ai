@@ -1,0 +1,40 @@
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Frontend dependencies
+node_modules/
+dist/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# IDE settings
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Model artifacts (we will selectively include final models)
+*.pkl
+*.joblib
