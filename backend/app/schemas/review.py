@@ -1,0 +1,15 @@
+
+from pydantic import BaseModel, ConfigDict
+from typing import Optional
+
+
+class ReviewCreate(BaseModel):
+    review_id: str
+    customer_id: str
+    product_id: str
+    channel_id: str
+    review_text: str
+
+
+class ReviewResponse(ReviewCreate):
+    model_config = ConfigDict(from_attributes=True)
