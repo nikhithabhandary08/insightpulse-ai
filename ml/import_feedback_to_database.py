@@ -1,251 +1,336 @@
 
-from pathlib import Path
+"""
+Import generated synthetic InsightPulse AI CSV files into SQLite.
 
-import pandas as pd
+Run from the repository root:
+    PYTHONPATH=backend python ml/import_feedback_to_database.py
+
+Existing records with matching primary keys are skipped.
+"""
+
+import csv
+from datetime import datetime
+from pathlib import Path
 
 from app.db.database import SessionLocal
 from app.models.customer import Customer
 from app.models.product import Product
 from app.models.channel import Channel
+from app.models.survey import Survey
+from app.models.survey_response import SurveyResponse
 from app.models.review import Review
+from app.models.support_message import SupportMessage
 from app.models.theme import Theme
+from app.models.sentiment_label import SentimentLabel
+from app.models.action_item import ActionItem
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
+GENERATED_DIR = BASE_DIR / "data" / "generated"
 
-CLEANED_DATA_PATH = (
-    BASE_DIR / "data" / "generated" / "cleaned_customer_reviews.csv"
-)
 
-THEME_RESULTS_PATH = (
-    BASE_DIR / "data" / "generated" / "theme_detection_results.csv"
-)
+def read_csv(filename):
+    path = GENERATED_DIR / filename
 
-CUSTOMER_ID = "CUS-KAGGLE-ANON"
-CHANNEL_ID = "CH-001"
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Required generated file not found: {path}\n"
+            "Run the synthetic data generator first."
+        )
+
+    with path.open("r", newline="", encoding="utf-8-sig") as file:
+        return list(csv.DictReader(file))
+
+
+def parse_datetime(value):
+    if not value:
+        return None
+    return datetime.fromisoformat(value)
+
+
+def existing_ids(db, model, id_column):
+    return {row[0] for row in db.query(id_column).all()}
+
+
+def add_missing_masters(db, rows, model, id_field, mapper):
+    known_ids = existing_ids(db, model, getattr(model, id_field))
+    objects = []
+
+    for row in rows:
+        record_id = row[id_field]
+
+        if record_id in known_ids:
+            continue
+
+        objects.append(model(**mapper(row)))
+        known_ids.add(record_id)
+
+    if objects:
+        db.add_all(objects)
+        db.flush()
+
+    return len(objects)
+
+
+def add_missing_events(
+    db,
+    rows,
+    model,
+    id_field,
+    mapper,
+    batch_size=5000,
+    model_id_field=None,
+):
+    """
+    id_field: primary-key column in the CSV.
+    model_id_field: corresponding primary-key field in the database model.
+    """
+    database_id_field = model_id_field or id_field
+
+    known_ids = existing_ids(
+        db,
+        model,
+        getattr(model, database_id_field)
+    )
+
+    inserted = 0
+    batch = []
+
+    for row in rows:
+        record_id = row[id_field]
+
+        if record_id in known_ids:
+            continue
+
+        batch.append(model(**mapper(row)))
+        known_ids.add(record_id)
+
+        if len(batch) >= batch_size:
+            db.add_all(batch)
+            db.flush()
+            inserted += len(batch)
+            batch.clear()
+
+    if batch:
+        db.add_all(batch)
+        db.flush()
+        inserted += len(batch)
+
+    return inserted
 
 
 def import_feedback():
-    print("Loading datasets...")
+    print("Loading generated synthetic CSV files...")
 
-    if not CLEANED_DATA_PATH.exists():
-        raise FileNotFoundError(CLEANED_DATA_PATH)
+    customers = read_csv("customers.csv")
+    products = read_csv("products.csv")
+    channels = read_csv("channels.csv")
+    surveys = read_csv("surveys.csv")
+    themes = read_csv("themes.csv")
+    sentiment_labels = read_csv("sentiment_labels.csv")
 
-    if not THEME_RESULTS_PATH.exists():
-        raise FileNotFoundError(THEME_RESULTS_PATH)
-
-    reviews_df = pd.read_csv(CLEANED_DATA_PATH)
-    themes_df = pd.read_csv(THEME_RESULTS_PATH)
-
-    # Match theme results with the original review information.
-    data = reviews_df.merge(
-        themes_df[["text", "topic_id", "theme_name"]],
-        on="text",
-        how="left",
-        validate="one_to_one"
-    )
-
-    if data["topic_id"].isna().any():
-        raise ValueError("Some reviews do not have matching theme results.")
-
-    print("Reviews ready for import:", len(data))
+    reviews = read_csv("reviews.csv")
+    responses = read_csv("survey_responses.csv")
+    messages = read_csv("support_messages.csv")
+    action_items = read_csv("action_items.csv")
 
     db = SessionLocal()
+    inserted_counts = {}
 
     try:
-        # Create the anonymous dataset customer.
-        customer = db.query(Customer).filter(
-            Customer.customer_id == CUSTOMER_ID
-        ).first()
+        print("Importing master records...")
 
-        if not customer:
-            db.add(
-                Customer(
-                    customer_id=CUSTOMER_ID,
-                    customer_name="Anonymous Dataset Customer",
-                    email=None,
-                    country=None
-                )
-            )
-            db.flush()
-
-        # Ensure the review channel exists.
-        channel = db.query(Channel).filter(
-            Channel.channel_id == CHANNEL_ID
-        ).first()
-
-        if not channel:
-            db.add(
-                Channel(
-                    channel_id=CHANNEL_ID,
-                    channel_name="Online Reviews",
-                    description="Online customer reviews used for feedback analysis."
-                )
-            )
-            db.flush()
-
-        # Create product records using actual Clothing IDs.
-        product_data = data[
-            ["clothing_id", "product_class", "department"]
-        ].drop_duplicates(subset=["clothing_id"])
-
-        existing_product_ids = {
-            row[0] for row in db.query(Product.product_id).all()
-        }
-
-        new_products = []
-
-        for row in product_data.itertuples(index=False):
-            if pd.isna(row.clothing_id):
-                product_id = "PROD-KAGGLE-UNKNOWN"
-                product_name = "Uncategorized Clothing Item"
-            else:
-                clothing_id = int(row.clothing_id)
-                product_id = f"PROD-KAGGLE-{clothing_id}"
-                product_name = f"Clothing Item {clothing_id}"
-
-            if product_id in existing_product_ids:
-                continue
-
-            category = (
-                str(row.product_class)
-                if pd.notna(row.product_class)
-                else "Uncategorized"
-            )
-
-            department = (
-                str(row.department)
-                if pd.notna(row.department)
-                else "Uncategorized"
-            )
-
-            new_products.append(
-                Product(
-                    product_id=product_id,
-                    product_name=product_name,
-                    category=category,
-                    description=f"Department: {department}. Source: Kaggle clothing reviews."
-                )
-            )
-
-            existing_product_ids.add(product_id)
-
-        db.add_all(new_products)
-        db.flush()
-
-        print("New products created:", len(new_products))
-
-        # Create themes discovered by BERTopic.
-        existing_themes = db.query(Theme).all()
-
-        theme_id_by_name = {
-            theme.theme_name: theme.theme_id
-            for theme in existing_themes
-        }
-
-        existing_theme_ids = {
-            theme.theme_id for theme in existing_themes
-        }
-
-        topic_to_theme_id = {}
-        new_themes = []
-
-        topic_data = (
-            data[data["topic_id"] != -1][
-                ["topic_id", "theme_name"]
-            ]
-            .drop_duplicates()
-            .sort_values("topic_id")
+        inserted_counts["customers"] = add_missing_masters(
+            db,
+            customers,
+            Customer,
+            "customer_id",
+            lambda row: {
+                "customer_id": row["customer_id"],
+                "customer_name": row["customer_name"],
+                "email": row.get("email") or None,
+                "country": row.get("country") or None,
+            },
         )
 
-        for row in topic_data.itertuples(index=False):
-            topic_id = int(row.topic_id)
-            theme_name = str(row.theme_name)
+        inserted_counts["products"] = add_missing_masters(
+            db,
+            products,
+            Product,
+            "product_id",
+            lambda row: {
+                "product_id": row["product_id"],
+                "product_name": row["product_name"],
+                "category": row["category"],
+                "description": row.get("description") or None,
+            },
+        )
 
-            if theme_name in theme_id_by_name:
-                topic_to_theme_id[topic_id] = theme_id_by_name[theme_name]
-                continue
+        inserted_counts["channels"] = add_missing_masters(
+            db,
+            channels,
+            Channel,
+            "channel_id",
+            lambda row: {
+                "channel_id": row["channel_id"],
+                "channel_name": row["channel_name"],
+                "description": row.get("description") or None,
+            },
+        )
 
-            theme_id = f"THEME-BERTOPIC-{topic_id:03d}"
+        inserted_counts["surveys"] = add_missing_masters(
+            db,
+            surveys,
+            Survey,
+            "survey_id",
+            lambda row: {
+                "survey_id": row["survey_id"],
+                "survey_title": (
+                    row.get("survey_name")
+                    or row.get("survey_title")
+                    or row["survey_id"]
+                ),
+                "description": row.get("description") or None,
+                "status": row.get("status") or "Active",
+            },
+        )
 
-            if theme_id in existing_theme_ids:
-                raise ValueError(
-                    f"Theme ID conflict: {theme_id}"
-                )
+        inserted_counts["themes"] = add_missing_masters(
+            db,
+            themes,
+            Theme,
+            "theme_id",
+            lambda row: {
+                "theme_id": row["theme_id"],
+                "theme_name": row["theme_name"],
+                "description": row.get("description") or None,
+            },
+        )
 
-            new_themes.append(
-                Theme(
-                    theme_id=theme_id,
-                    theme_name=theme_name,
-                    description=(
-                        f"Automatically discovered by BERTopic. "
-                        f"Original topic ID: {topic_id}."
-                    )
-                )
-            )
+        inserted_counts["sentiment_labels"] = add_missing_masters(
+            db,
+            sentiment_labels,
+            SentimentLabel,
+            "sentiment_id",
+            lambda row: {
+                "sentiment_id": row["sentiment_id"],
+                "sentiment_name": row["sentiment_name"],
+                "description": row.get("description") or None,
+            },
+        )
 
-            topic_to_theme_id[topic_id] = theme_id
-            existing_theme_ids.add(theme_id)
-            theme_id_by_name[theme_name] = theme_id
-
-        db.add_all(new_themes)
         db.flush()
 
-        print("New themes created:", len(new_themes))
+        print("Importing feedback records...")
 
-        # Import reviews without duplicating existing records.
-        existing_review_ids = {
-            row[0] for row in db.query(Review.review_id).all()
-        }
+        inserted_counts["reviews"] = add_missing_events(
+            db,
+            reviews,
+            Review,
+            "review_id",
+            lambda row: {
+                "review_id": row["review_id"],
+                "customer_id": row["customer_id"],
+                "product_id": row["product_id"],
+                "channel_id": row["channel_id"],
+                "review_text": row["review_text"],
+                "rating": int(row["rating"]) if row.get("rating") else None,
+                "sentiment": row.get("sentiment") or None,
+                "sentiment_confidence": (
+                    float(row["sentiment_confidence"])
+                    if row.get("sentiment_confidence")
+                    else None
+                ),
+                "theme_id": row.get("theme_id") or None,
+                "predicted_theme": row.get("predicted_theme") or None,
+                "created_at": parse_datetime(row.get("created_at")),
+            },
+        )
 
-        new_reviews = []
+        inserted_counts["survey_responses"] = add_missing_events(
+            db,
+            responses,
+            SurveyResponse,
+            "response_id",
+            lambda row: {
+                "response_id": row["response_id"],
+                "survey_id": row["survey_id"],
+                "customer_id": row["customer_id"],
+                "product_id": row["product_id"],
+                "channel_id": row["channel_id"],
+                "response_text": row["response_text"],
+                "sentiment": row.get("sentiment") or None,
+                "sentiment_confidence": (
+                    float(row["sentiment_confidence"])
+                    if row.get("sentiment_confidence")
+                    else None
+                ),
+                "theme_id": row.get("theme_id") or None,
+                "predicted_theme": row.get("predicted_theme") or None,
+                "submitted_at": parse_datetime(row.get("submitted_at")),
+            },
+        )
 
-        for index, row in enumerate(data.itertuples(index=False), start=1):
-            review_id = f"REV-KAGGLE-{index:06d}"
+        inserted_counts["support_messages"] = add_missing_events(
+            db,
+            messages,
+            SupportMessage,
+            "message_id",
+            lambda row: {
+                "message_id": row["message_id"],
+                "ticket_id": row["ticket_id"],
+                "customer_id": row["customer_id"],
+                "channel_id": row["channel_id"],
+                "message_text": row["message_text"],
+                "sentiment": row.get("sentiment") or None,
+                "sentiment_confidence": (
+                    float(row["sentiment_confidence"])
+                    if row.get("sentiment_confidence")
+                    else None
+                ),
+                "theme_id": row.get("theme_id") or None,
+                "predicted_theme": row.get("predicted_theme") or None,
+                "created_at": parse_datetime(row.get("created_at")),
+            },
+        )
 
-            if review_id in existing_review_ids:
-                continue
+        # CSV uses action_item_id; database model uses action_id.
+        inserted_counts["action_items"] = add_missing_events(
+            db,
+            action_items,
+            ActionItem,
+            "action_item_id",
+            lambda row: {
+                "action_id": row["action_item_id"],
+                "theme_id": row["theme_id"],
+                "action_title": row["title"],
+                "description": row["description"],
+                "priority": row["priority"],
+                "status": row["status"],
+                "source_count": int(row["source_count"]),
+                "negative_percentage": float(row["negative_percentage"]),
+                "threshold_percentage": float(row["threshold_percentage"]),
+            },
+            model_id_field="action_id",
+        )
 
-            clothing_id = (
-                int(row.clothing_id)
-                if pd.notna(row.clothing_id)
-                else None
-            )
-
-            product_id = (
-                f"PROD-KAGGLE-{clothing_id}"
-                if clothing_id is not None
-                else "PROD-KAGGLE-UNKNOWN"
-            )
-
-            topic_id = int(row.topic_id)
-
-            theme_id = (
-                topic_to_theme_id.get(topic_id)
-                if topic_id != -1
-                else None
-            )
-
-            new_reviews.append(
-                Review(
-                    review_id=review_id,
-                    customer_id=CUSTOMER_ID,
-                    product_id=product_id,
-                    channel_id=CHANNEL_ID,
-                    review_text=str(row.text),
-                    sentiment=str(row.sentiment),
-                    sentiment_confidence=None,
-                    theme_id=theme_id
-                )
-            )
-
-        db.add_all(new_reviews)
         db.commit()
 
-        print("\nDatabase import completed successfully!")
-        print("New reviews imported:", len(new_reviews))
-        print("Existing reviews preserved:", len(existing_review_ids))
-        print("Unassigned theme reviews:", (data["topic_id"] == -1).sum())
+        print("\nSynthetic data import completed successfully.")
+        print("New records inserted:")
+
+        for table_name, count in inserted_counts.items():
+            print(f"  {table_name}: {count}")
+
+        print("\nExisting records with matching IDs were skipped.")
+        print(
+            "The intentionally duplicated survey submission was retained "
+            "because it has its own response_id."
+        )
+        print(
+            'The invalid predicted_theme value "Billing" was preserved '
+            "for anomaly detection."
+        )
 
     except Exception:
         db.rollback()
