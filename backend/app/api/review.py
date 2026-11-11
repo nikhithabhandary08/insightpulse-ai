@@ -1,9 +1,11 @@
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
 from app.models.review import Review
 from app.schemas.review import ReviewCreate, ReviewResponse
+from app.services.sentiment_service import predict_feedback_sentiment
 
 router = APIRouter(
     prefix="/reviews",
@@ -26,7 +28,21 @@ def create_review(
             detail="Review ID already exists"
         )
 
-    db_review = Review(**review.model_dump())
+    try:
+        sentiment_result = predict_feedback_sentiment(
+            review.review_text
+        )
+    except (ValueError, FileNotFoundError) as error:
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )
+
+    db_review = Review(
+        **review.model_dump(),
+        sentiment=sentiment_result["sentiment"],
+        sentiment_confidence=sentiment_result["confidence"]
+    )
 
     db.add(db_review)
     db.commit()

@@ -12,4 +12,7 @@ class ReviewCreate(BaseModel):
 
 
 class ReviewResponse(ReviewCreate):
+    sentiment: Optional[str] = None
+    sentiment_confidence: Optional[float] = None
+
     model_config = ConfigDict(from_attributes=True)
