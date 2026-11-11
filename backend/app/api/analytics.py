@@ -2,12 +2,17 @@
 import json
 import requests
 
-from fastapi import APIRouter, Depends, HTTPException
+from collections import defaultdict
+from datetime import datetime
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from app.db.dependencies import get_db
 from app.models.review import Review
+from app.models.survey_response import SurveyResponse
+from app.models.support_message import SupportMessage
 from app.models.theme import Theme
 from app.models.product import Product
 from app.services.llm_service import generate_insights
@@ -15,250 +20,285 @@ from app.services.llm_service import generate_insights
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
+SENTIMENTS = ["positive", "neutral", "negative", "mixed"]
+
+
+def get_all_feedback(db: Session):
+    """Collect feedback from all three sources in a common format."""
+
+    feedback = []
+
+    reviews = db.query(Review).all()
+    for item in reviews:
+        feedback.append({
+            "source_type": "Review",
+            "source_id": item.review_id,
+            "text": item.review_text,
+            "sentiment": (item.sentiment or "").lower(),
+            "theme_id": item.theme_id,
+            "predicted_theme": item.predicted_theme,
+            "product_id": item.product_id,
+            "channel_id": item.channel_id,
+            "created_at": item.created_at
+        })
+
+    responses = db.query(SurveyResponse).all()
+    for item in responses:
+        feedback.append({
+            "source_type": "SurveyResponse",
+            "source_id": item.response_id,
+            "text": item.response_text,
+            "sentiment": (item.sentiment or "").lower(),
+            "theme_id": item.theme_id,
+            "predicted_theme": item.predicted_theme,
+            "product_id": item.product_id,
+            "channel_id": item.channel_id,
+            "created_at": item.submitted_at
+        })
+
+    messages = db.query(SupportMessage).all()
+    for item in messages:
+        feedback.append({
+            "source_type": "SupportMessage",
+            "source_id": item.message_id,
+            "text": item.message_text,
+            "sentiment": (item.sentiment or "").lower(),
+            "theme_id": item.theme_id,
+            "predicted_theme": item.predicted_theme,
+            "product_id": None,
+            "channel_id": item.channel_id,
+            "created_at": item.created_at
+        })
+
+    return feedback
+
+
+def get_sentiment_distribution(feedback):
+    distribution = {sentiment: 0 for sentiment in SENTIMENTS}
+    unclassified = 0
+
+    for item in feedback:
+        sentiment = item["sentiment"]
+
+        if sentiment in distribution:
+            distribution[sentiment] += 1
+        else:
+            unclassified += 1
+
+    return distribution, unclassified
+
 
 @router.get("/overview")
 def get_overview(db: Session = Depends(get_db)):
-    total_reviews = db.query(Review).count()
-
-    sentiment_counts = (
-        db.query(Review.sentiment, func.count(Review.review_id))
-        .group_by(Review.sentiment)
-        .all()
-    )
-
-    sentiment_distribution = {
-        "positive": 0,
-        "negative": 0,
-        "neutral": 0
-    }
-
-    for sentiment, count in sentiment_counts:
-        if sentiment in sentiment_distribution:
-            sentiment_distribution[sentiment] = count
+    feedback = get_all_feedback(db)
+    distribution, unclassified = get_sentiment_distribution(feedback)
 
     return {
-        "total_reviews": total_reviews,
-        "sentiment_distribution": sentiment_distribution
+        "total_feedback": len(feedback),
+        "classified_feedback": sum(distribution.values()),
+        "unclassified_feedback": unclassified,
+        "sentiment_distribution": distribution
     }
 
 
 @router.get("/themes")
 def get_theme_analytics(db: Session = Depends(get_db)):
-    results = (
-        db.query(
-            Theme.theme_id,
-            Theme.theme_name,
-            func.count(Review.review_id).label("feedback_count")
-        )
-        .outerjoin(Review, Theme.theme_id == Review.theme_id)
-        .group_by(Theme.theme_id, Theme.theme_name)
-        .order_by(func.count(Review.review_id).desc())
-        .all()
-    )
+    feedback = get_all_feedback(db)
+    theme_counts = defaultdict(int)
 
-    return [
+    themes = {
+        theme.theme_id: theme.theme_name
+        for theme in db.query(Theme).all()
+    }
+
+    for item in feedback:
+        theme_id = item["theme_id"]
+        if theme_id:
+            theme_counts[theme_id] += 1
+
+    results = [
         {
             "theme_id": theme_id,
-            "theme_name": theme_name,
-            "feedback_count": feedback_count
+            "theme_name": themes.get(theme_id, "Unknown"),
+            "feedback_count": count
         }
-        for theme_id, theme_name, feedback_count in results
+        for theme_id, count in theme_counts.items()
     ]
+
+    return sorted(
+        results,
+        key=lambda item: item["feedback_count"],
+        reverse=True
+    )
 
 
 @router.get("/sentiment-by-theme")
 def get_sentiment_by_theme(db: Session = Depends(get_db)):
-    results = (
-        db.query(
-            Theme.theme_name,
-            Review.sentiment,
-            func.count(Review.review_id).label("feedback_count")
-        )
-        .join(Review, Theme.theme_id == Review.theme_id)
-        .group_by(Theme.theme_name, Review.sentiment)
-        .order_by(Theme.theme_name)
-        .all()
+    feedback = get_all_feedback(db)
+
+    themes = {
+        theme.theme_id: theme.theme_name
+        for theme in db.query(Theme).all()
+    }
+
+    analytics = defaultdict(
+        lambda: {sentiment: 0 for sentiment in SENTIMENTS}
     )
 
-    analytics = {}
+    for item in feedback:
+        theme_id = item["theme_id"]
+        sentiment = item["sentiment"]
 
-    for theme_name, sentiment, count in results:
-        if theme_name not in analytics:
-            analytics[theme_name] = {
-                "positive": 0,
-                "negative": 0,
-                "neutral": 0
-            }
+        if theme_id and sentiment in SENTIMENTS:
+            theme_name = themes.get(theme_id, "Unknown")
+            analytics[theme_name][sentiment] += 1
 
-        if sentiment in analytics[theme_name]:
-            analytics[theme_name][sentiment] = count
-
-    return analytics
+    return dict(analytics)
 
 
 @router.get("/product-categories")
 def get_product_category_analytics(db: Session = Depends(get_db)):
-    results = (
-        db.query(
-            Product.category,
-            func.count(Review.review_id).label("review_count")
-        )
-        .join(Review, Product.product_id == Review.product_id)
-        .group_by(Product.category)
-        .order_by(func.count(Review.review_id).desc())
-        .all()
-    )
+    # Reviews and survey responses contain product IDs.
+    # Support messages do not contain product IDs.
+
+    category_counts = defaultdict(int)
+
+    reviews = db.query(Review).all()
+    responses = db.query(SurveyResponse).all()
+
+    for item in reviews:
+        product = db.query(Product).filter(
+            Product.product_id == item.product_id
+        ).first()
+
+        if product:
+            category_counts[product.category] += 1
+
+    for item in responses:
+        product = db.query(Product).filter(
+            Product.product_id == item.product_id
+        ).first()
+
+        if product:
+            category_counts[product.category] += 1
 
     return [
         {
             "category": category,
-            "review_count": review_count
+            "feedback_count": count
         }
-        for category, review_count in results
+        for category, count in sorted(
+            category_counts.items(),
+            key=lambda item: item[1],
+            reverse=True
+        )
     ]
+
+
+@router.get("/sentiment-trends")
+def get_sentiment_trends(
+    period: str = Query(default="weekly", pattern="^(weekly|monthly)$"),
+    db: Session = Depends(get_db)
+):
+    feedback = get_all_feedback(db)
+    trends = defaultdict(
+        lambda: {sentiment: 0 for sentiment in SENTIMENTS}
+    )
+
+    for item in feedback:
+        created_at = item["created_at"]
+        sentiment = item["sentiment"]
+
+        if not created_at or sentiment not in SENTIMENTS:
+            continue
+
+        if period == "weekly":
+            year, week, _ = created_at.isocalendar()
+            period_key = f"{year}-W{week:02d}"
+        else:
+            period_key = created_at.strftime("%Y-%m")
+
+        trends[period_key][sentiment] += 1
+
+    return {
+        "period": period,
+        "trends": [
+            {
+                "date": key,
+                **counts
+            }
+            for key, counts in sorted(trends.items())
+        ]
+    }
 
 
 @router.get("/ai-insights")
 def get_ai_insights(db: Session = Depends(get_db)):
-    total_reviews = db.query(Review).count()
+    feedback = get_all_feedback(db)
 
-    if total_reviews == 0:
+    if not feedback:
         raise HTTPException(
             status_code=404,
             detail="No customer feedback is available for analysis."
         )
 
-    # Calculate sentiment distribution
-    sentiment_counts = (
-        db.query(
-            Review.sentiment,
-            func.count(Review.review_id)
-        )
-        .group_by(Review.sentiment)
-        .all()
-    )
+    distribution, unclassified = get_sentiment_distribution(feedback)
 
-    sentiment_distribution = {
-        "positive": 0,
-        "negative": 0,
-        "neutral": 0
+    classified = sum(distribution.values())
+
+    percentages = {
+        sentiment: round(count / classified * 100, 2)
+        if classified else 0
+        for sentiment, count in distribution.items()
     }
 
-    for sentiment, count in sentiment_counts:
-        if sentiment in sentiment_distribution:
-            sentiment_distribution[sentiment] = count
+    theme_results = get_theme_analytics(db)
+    theme_sentiments = get_sentiment_by_theme(db)
 
-    classified_reviews = sum(sentiment_distribution.values())
-    unclassified_reviews = total_reviews - classified_reviews
+    theme_analytics = []
 
-    sentiment_percentages = {
-        sentiment: round(count / classified_reviews * 100, 2)
-        if classified_reviews else 0
-        for sentiment, count in sentiment_distribution.items()
-    }
-
-    # Calculate sentiment counts for each theme
-    theme_results = (
-        db.query(
-            Theme.theme_name,
-            Review.sentiment,
-            func.count(Review.review_id)
+    for theme in theme_results:
+        counts = theme_sentiments.get(
+            theme["theme_name"],
+            {sentiment: 0 for sentiment in SENTIMENTS}
         )
-        .join(Review, Theme.theme_id == Review.theme_id)
-        .filter(Review.sentiment.isnot(None))
-        .group_by(Theme.theme_name, Review.sentiment)
-        .all()
+
+        total = sum(counts.values())
+
+        theme_analytics.append({
+            "theme": theme["theme_name"],
+            "feedback_count": total,
+            "sentiment_counts": counts,
+            "negative_percentage": round(
+                counts["negative"] / total * 100, 2
+            ) if total else 0
+        })
+
+    theme_analytics.sort(
+        key=lambda item: item["feedback_count"],
+        reverse=True
     )
 
-    theme_analytics = {}
-
-    for theme_name, sentiment, count in theme_results:
-        if theme_name not in theme_analytics:
-            theme_analytics[theme_name] = {
-                "positive": 0,
-                "negative": 0,
-                "neutral": 0
-            }
-
-        if sentiment in theme_analytics[theme_name]:
-            theme_analytics[theme_name][sentiment] = count
-
-    for theme_name, counts in theme_analytics.items():
-        theme_total = sum(counts.values())
-
-        counts["total_reviews"] = theme_total
-        counts["negative_percentage"] = round(
-            counts["negative"] / theme_total * 100, 2
-        ) if theme_total else 0
-
-    # Top themes by review volume
-    top_themes = sorted(
-        [
-            {"theme": name, **counts}
-            for name, counts in theme_analytics.items()
-        ],
-        key=lambda item: item["total_reviews"],
-        reverse=True
-    )[:8]
-
-    # Themes with the most negative reviews
-    negative_themes = sorted(
-        [
-            {"theme": name, **counts}
-            for name, counts in theme_analytics.items()
-            if counts["negative"] > 0
-        ],
-        key=lambda item: item["negative"],
-        reverse=True
-    )[:8]
-
-    # Top product categories
-    category_results = (
-        db.query(
-            Product.category,
-            func.count(Review.review_id).label("review_count")
-        )
-        .join(Review, Product.product_id == Review.product_id)
-        .group_by(Product.category)
-        .order_by(func.count(Review.review_id).desc())
-        .limit(5)
-        .all()
-    )
-
-    top_categories = [
-        {
-            "category": category,
-            "review_count": count
-        }
-        for category, count in category_results
-    ]
-
-    # Prepare factual statistics for Llama
     prompt = f"""
 You are a professional customer feedback intelligence analyst.
 
-Analyze these database statistics.
+Analyze these database statistics from reviews, survey responses,
+and customer support messages.
 
-TOTAL REVIEWS: {total_reviews}
+TOTAL FEEDBACK: {len(feedback)}
 
-CLASSIFIED REVIEWS: {classified_reviews}
+CLASSIFIED FEEDBACK: {classified}
 
-UNCLASSIFIED REVIEWS: {unclassified_reviews}
+UNCLASSIFIED FEEDBACK: {unclassified}
 
 SENTIMENT COUNTS:
-{json.dumps(sentiment_distribution)}
+{json.dumps(distribution)}
 
 SENTIMENT PERCENTAGES:
-{json.dumps(sentiment_percentages)}
+{json.dumps(percentages)}
 
-TOP THEMES:
-{json.dumps(top_themes)}
-
-THEMES WITH MOST NEGATIVE REVIEWS:
-{json.dumps(negative_themes)}
-
-TOP PRODUCT CATEGORIES:
-{json.dumps(top_categories)}
+THEME ANALYTICS:
+{json.dumps(theme_analytics[:8])}
 
 Write a concise business intelligence report with:
 
@@ -268,15 +308,11 @@ Write a concise business intelligence report with:
 4. Actionable Business Recommendations
 
 IMPORTANT:
-- Use the supplied statistics only.
-- Do not recalculate sentiment percentages.
-- Theme totals are not positive review counts.
-- Use separate positive, negative and neutral counts.
-- Theme labels are automatically generated keywords,
-  not confirmed explanations of customer problems.
+- Use only the supplied statistics.
 - Do not invent causes or customer experiences.
 - Distinguish observed facts from possible explanations.
-- State limitations where evidence is insufficient.
+- Include all four sentiment labels.
+- Mention limitations where evidence is insufficient.
 """
 
     try:
@@ -295,13 +331,11 @@ IMPORTANT:
         )
 
     return {
-        "total_reviews_analyzed": total_reviews,
-        "classified_reviews": classified_reviews,
-        "unclassified_reviews": unclassified_reviews,
-        "sentiment_distribution": sentiment_distribution,
-        "sentiment_percentages": sentiment_percentages,
-        "top_themes": top_themes,
-        "negative_themes": negative_themes,
-        "top_categories": top_categories,
+        "total_feedback_analyzed": len(feedback),
+        "classified_feedback": classified,
+        "unclassified_feedback": unclassified,
+        "sentiment_distribution": distribution,
+        "sentiment_percentages": percentages,
+        "theme_analytics": theme_analytics,
         "ai_insights": ai_response
     }
