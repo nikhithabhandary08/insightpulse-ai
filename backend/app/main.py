@@ -1,4 +1,4 @@
-
+from app.api.action_item import router as action_item_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.anomaly import router as anomaly_router
@@ -41,6 +41,7 @@ app.include_router(sentiment_router)
 app.include_router(theme_router)
 app.include_router(analytics_router)
 app.include_router(anomaly_router)
+app.include_router(action_item_router)
 
 
 @app.get("/")
