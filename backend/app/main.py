@@ -9,6 +9,7 @@ from app.api.survey_response import router as survey_response_router
 from app.api.support import router as support_router
 from app.api.sentiment import router as sentiment_router
 from app.api.theme import router as theme_router
+from app.api.analytics import router as analytics_router
 
 app = FastAPI(
     title="InsightPulse AI",
@@ -25,6 +26,7 @@ app.include_router(survey_response_router)
 app.include_router(support_router)
 app.include_router(sentiment_router)
 app.include_router(theme_router)
+app.include_router(analytics_router)
 
 
 @app.get("/")
