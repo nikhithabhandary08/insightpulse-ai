@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
@@ -9,6 +8,7 @@ class ReviewCreate(BaseModel):
     product_id: str
     channel_id: str
     review_text: str
+    theme_id: Optional[str] = None
 
 
 class ReviewResponse(ReviewCreate):

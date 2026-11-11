@@ -8,7 +8,11 @@ from app.db.database import Base
 class Review(Base):
     __tablename__ = "reviews"
 
-    review_id = Column(String(50), primary_key=True, index=True)
+    review_id = Column(
+        String(50),
+        primary_key=True,
+        index=True
+    )
 
     customer_id = Column(
         String(50),
@@ -30,9 +34,21 @@ class Review(Base):
 
     review_text = Column(Text, nullable=False)
 
-    sentiment = Column(String(20), nullable=True)
+    sentiment = Column(
+        String(20),
+        nullable=True
+    )
 
-    sentiment_confidence = Column(Float, nullable=True)
+    sentiment_confidence = Column(
+        Float,
+        nullable=True
+    )
+
+    theme_id = Column(
+        String(50),
+        ForeignKey("themes.theme_id"),
+        nullable=True
+    )
 
     created_at = Column(
         DateTime(timezone=True),
