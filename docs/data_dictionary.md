@@ -7,7 +7,7 @@ InsightPulse AI is a Customer Feedback Intelligence Platform that combines produ
 ### Synthetic Data Configuration
 
 - Random seed: `20261022`
-- Reviews and survey responses combined: 50,000 (full scale)
+- Reviews and survey responses combined: 50,001 (full scale, including one intentionally injected duplicate survey response)
 - Support messages: 20,000 (full scale)
 - Sentiment labels: Positive, Negative, Neutral, Mixed
 - Theme labels: Performance, Customer Support, Feature Request
@@ -29,7 +29,7 @@ The generator supports starter and full dataset configurations.
 | Support Message | MSG-TKT-2026-000001-001 | MSG-TKT-2026-000001-001 |
 | Theme | THEME-000001 | THEME-000001 |
 | Sentiment | SENT-001 | SENT-001 |
-| Action Item | ACT-2026-000001 or ACT-AUTO-... | ACT-2026-000001 |
+| Action Item | ACT-000001 or ACT-AUTO-... | ACT-000001 |
 | Anomaly | ANOM-... | Generated anomaly identifier |
 
 IDs are used to identify records and maintain relationships between entities. Generated records use a fixed random seed. Automatically generated ActionItem identifiers may use UUID-based values.
@@ -176,7 +176,7 @@ Allowed sentiment values:
 | theme_id | String | Yes | Valid Theme foreign key |
 | action_title | String | Yes | Non-empty action title |
 | description | String | Yes | Action explanation |
-| priority | String | Yes | Medium, High or Critical |
+| priority | String | Yes | Low, Medium, High or Critical |
 | status | String | Yes | Open, In Progress or Resolved |
 | source_count | Integer | Yes | Number of linked feedback records |
 | negative_percentage | Float | No | Negative feedback percentage |
@@ -294,7 +294,7 @@ ActionItemHistory is planned and is not included as an implemented database rela
 1. Generate master records before dependent records.
 2. Generate valid foreign-key relationships.
 3. Use a fixed random seed of 20261022 by default.
-4. Generate 50,000 reviews and survey responses combined in the full dataset.
+4. Generate 30,000 reviews and 20,001 survey responses in the full dataset, including one intentionally injected duplicate survey response.
 5. Generate 20,000 support messages in the full dataset.
 6. Include multilingual, neutral, mixed, sarcastic and ambiguous examples.
 7. Generate valid baseline records before injecting anomalies.
@@ -308,11 +308,11 @@ ActionItemHistory is planned and is not included as an implemented database rela
 
 | Issue type | Expected detection |
 |---|---|
-| Contradictory label | Identify disagreement between assigned sentiment and feedback text |
+| Contradictory label | Injected test case for evaluating disagreement between assigned sentiment and feedback text; not currently detected by the anomaly scanner. |
 | Duplicate response | Identify repeated survey submissions |
 | PII leakage | Detect email addresses and other personal identifiers |
 | Invalid theme | Detect themes outside the approved taxonomy |
-| Ground-truth leakage | Ensure evaluation labels are excluded from model inputs |
+| Ground-truth leakage | Prevent evaluation labels from entering model training and prediction through dataset validation and leakage guards. |
 | Rating-text mismatch | Identify inconsistencies between review ratings and feedback text |
 
 Detected anomalies are stored in AnomalyRecord and can be reviewed through the anomaly management API.
