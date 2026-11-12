@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
@@ -39,5 +40,15 @@ def create_support_message(
 
 
 @router.get("/", response_model=list[SupportMessageResponse])
-def get_support_messages(db: Session = Depends(get_db)):
-    return db.query(SupportMessage).all()
+def get_support_messages(
+    db: Session = Depends(get_db),
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=500)
+):
+    return (
+        db.query(SupportMessage)
+        .order_by(SupportMessage.message_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
