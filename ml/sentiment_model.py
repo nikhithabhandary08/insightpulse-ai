@@ -21,12 +21,7 @@ from sklearn.metrics import (
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATA_PATH = (
-    BASE_DIR
-    / "data"
-    / "generated"
-    / "cleaned_customer_reviews.csv"
-)
+DATA_PATH = BASE_DIR / "data" / "generated_full" / "cleaned_reviews.csv"
 
 MODEL_PATH = (
     Path(__file__).resolve().parent
@@ -155,6 +150,7 @@ def train_sentiment_model():
         classification_report(
             y_test,
             predictions,
+            labels=["mixed", "negative", "neutral", "positive"],
             zero_division=0
         )
     )
@@ -165,7 +161,7 @@ def train_sentiment_model():
         confusion_matrix(
             y_test,
             predictions,
-            labels=["negative", "neutral", "positive"]
+           labels=["mixed", "negative", "neutral", "positive"]
         )
     )
 

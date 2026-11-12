@@ -49,74 +49,199 @@ CHANNELS = [
     ("CH-005", "Social Media"),
 ]
 
+
 THEME_TEXT = {
     "Performance": {
         "Positive": [
-            "The application is fast and performs smoothly.",
-            "Loading speed has improved significantly.",
-            "The system works perfectly without delays.",
+            "The application loads quickly and runs smoothly.",
+            "The latest update has significantly improved loading speed.",
+            "The dashboard responds instantly to my requests.",
+            "The system works reliably without unexpected delays.",
+            "Pages open quickly and navigation feels smooth.",
+            "The application performs better than before.",
+            "I have experienced very few performance issues.",
+            "The application responds quickly to every request.",
+            "The system runs smoothly throughout the day.",
+            "The improved performance makes daily tasks easier.",
+            "The application is stable and consistently responsive.",
+            "The system remains responsive even during busy periods.",
         ],
         "Neutral": [
+            "The application takes a normal amount of time to load.",
+            "The system performance is similar to last week.",
+            "The dashboard displays the requested information.",
+            "The application is functioning as expected.",
             "The application performance is acceptable.",
             "The system is operating normally.",
             "The loading speed is average.",
+            "The dashboard takes a few seconds to respond.",
+            "Performance has remained unchanged this month.",
+            "The application works at its usual speed.",
+            "The system completed the requested operation.",
+            "I have not noticed any major performance changes.",
         ],
         "Negative": [
+            "The application frequently becomes unresponsive.",
+            "Slow response times interrupt my daily work.",
+            "The system takes too long to process requests.",
+            "Performance problems make the application frustrating to use.",
             "The application is slow and frequently crashes.",
             "Loading takes too long and the system freezes.",
-            "The dashboard is extremely slow.",
+            "The dashboard becomes extremely slow.",
+            "Pages take several minutes to load.",
+            "The application stops responding during normal use.",
+            "The latest update has made performance worse.",
+            "The system crashes whenever I open large reports.",
+            "Frequent delays make the application difficult to use.",
         ],
         "Mixed": [
-            "The application is fast sometimes, but crashes often.",
+            "The application is generally fast, but some pages load slowly.",
+            "The update improved stability, but performance remains inconsistent.",
+            "The system responds quickly, although occasional crashes occur.",
+            "The dashboard loads faster, but reports still take too long.",
+            "The application loads quickly, but it crashes occasionally.",
             "The latest update improved speed but introduced errors.",
-            "The system works well, but loading is inconsistent.",
+            "The system works well, although loading is inconsistent.",
+            "Navigation is smooth, but some pages remain slow.",
+            "Performance has improved, but unexpected freezes continue.",
+            "The dashboard is faster, although it sometimes stops responding.",
+            "The application works most of the time, but delays still occur.",
+            "Loading is quicker now, but certain features remain unstable.",
         ],
     },
     "Customer Support": {
         "Positive": [
+            "The support representative resolved my concern professionally.",
+            "The team followed up and provided a satisfactory solution.",
+            "The customer service experience was excellent.",
+            "The support team handled my request efficiently.",
             "The support team resolved my problem quickly.",
             "Customer service was helpful and professional.",
-            "The support agent was very understanding.",
+            "The support agent understood my issue immediately.",
+            "I received a clear solution from the support team.",
+            "The representative was polite and very helpful.",
+            "Customer support responded promptly and resolved my concern.",
+            "The team provided excellent assistance throughout the process.",
+            "My issue was resolved during the first conversation.",
         ],
         "Neutral": [
+            "My request is awaiting a response from the support team.",
+            "The support representative shared the ticket number.",
+            "The team confirmed receipt of my complaint.",
+            "My support case is currently under investigation.",
             "I received a response from customer support.",
             "The support ticket is currently being reviewed.",
             "The team acknowledged my request.",
+            "My support request has been registered.",
+            "The representative requested additional information.",
+            "Customer support provided an update about my case.",
+            "The ticket is still open.",
+            "I am waiting for the next support update.",
         ],
         "Negative": [
+            "The support team failed to address my complaint.",
+            "I received no useful response from customer service.",
+            "The support process was frustrating and time-consuming.",
+            "My repeated requests have not received any attention.",
             "Customer support has not resolved my issue.",
             "I waited several days without receiving assistance.",
             "Nobody responded to my support request.",
+            "The support team repeatedly ignored my messages.",
+            "The representative could not provide a solution.",
+            "My issue remains unresolved after several calls.",
+            "I had to explain the same problem multiple times.",
+            "The delayed response caused unnecessary frustration.",
         ],
         "Mixed": [
+            "The agent was courteous, but the issue was not resolved.",
+            "Support provided useful information, but the response arrived late.",
+            "The team responded quickly, although the solution was incomplete.",
+            "The representative was helpful, but I still need further assistance.",
             "The support agent was helpful, but the resolution was delayed.",
             "Support responded quickly but did not solve the issue.",
-            "The agent was polite, but my problem remains unresolved.",
+            "The representative was polite, but my problem remains unresolved.",
+            "The team understood my concern, although no solution was provided.",
+            "Customer service was friendly, but the waiting time was excessive.",
+            "I received a quick response, but the instructions were unclear.",
+            "The agent tried to help, but my issue happened again.",
+            "The support experience was good, except for the delayed resolution.",
         ],
     },
     "Feature Request": {
         "Positive": [
+            "The new functionality has made the application more convenient.",
+            "The additional feature improves my daily workflow.",
+            "The latest enhancement is useful and works reliably.",
+            "The new options make the application more flexible.",
             "The new features are useful and easy to understand.",
             "I appreciate the improvements to the application.",
             "The latest feature makes my work easier.",
+            "The new customization options are very helpful.",
+            "The updated dashboard provides useful functionality.",
+            "The additional filters make searching much easier.",
+            "The new feature works exactly as expected.",
+            "The application now provides the tools I need.",
         ],
         "Neutral": [
+            "I would like to explore the additional application settings.",
+            "The requested functionality is listed in the feature menu.",
+            "The application currently supports several customization options.",
+            "I have submitted a request for an additional feature.",
             "I would like to know more about the available features.",
             "The feature is currently available in the application.",
             "I am reviewing the new functionality.",
+            "The application includes an additional reporting option.",
+            "I have not tried the latest feature yet.",
+            "The customization option is available in settings.",
+            "The feature request has been recorded.",
+            "I am considering using the new functionality.",
         ],
         "Negative": [
+            "The application does not provide the functionality I require.",
+            "The lack of customization makes the application difficult to use.",
+            "The current features are insufficient for my workflow.",
+            "I am disappointed that the requested functionality is unavailable.",
             "The application is missing important features.",
             "I cannot find the feature that I need.",
             "The application lacks useful customization options.",
+            "The current reporting tools do not meet my requirements.",
+            "The application needs better filtering options.",
+            "I cannot complete my work without the requested feature.",
+            "The available functionality is too limited.",
+            "The missing export option makes reporting difficult.",
         ],
         "Mixed": [
+            "The new feature is convenient, but its settings are limited.",
+            "The update adds useful tools, although some improvements are still needed.",
+            "The functionality is helpful, but the interface is confusing.",
+            "The new option saves time, but it does not support every use case.",
             "The new feature is useful, but it needs more options.",
             "I like the update, although some features are missing.",
             "The feature is helpful, but it could be improved.",
+            "The new dashboard looks good, but customization is limited.",
+            "The additional filters help, but some search options are missing.",
+            "The feature saves time, although it has a few limitations.",
+            "The update is useful, but the navigation could be simpler.",
+            "I appreciate the new functionality, but it needs more flexibility.",
         ],
     },
 }
+
+MULTILINGUAL_TEXT = [
+    "App chennagide, but sometimes it is very slow.",
+    "Service is good, lekin payment failed yesterday.",
+    "ಬಹಳ ಚೆನ್ನಾಗಿದೆ, but customer support needs improvement.",
+    "La aplicación funciona bien, but loading takes too long.",
+    "The support team helped me, ಧನ್ಯವಾದಗಳು.",
+]
+
+AMBIGUOUS_TEXT = [
+    "Wow, another update that makes everything slower. Amazing!",
+    "Great, I have to contact support for the third time.",
+    "It works... when it wants to.",
+    "Not bad, but definitely not impressive.",
+]
+
 
 MULTILINGUAL_TEXT = [
     "App chennagide, but sometimes it is very slow.",
@@ -908,6 +1033,8 @@ def validate_dataset(
 # =========================================================
 
 def main():
+    global GENERATED_DIR, GROUND_TRUTH_DIR, MANIFEST_DIR
+    
     parser = argparse.ArgumentParser(
         description="Generate synthetic InsightPulse AI data"
     )
@@ -925,6 +1052,17 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # Keep starter and full-scale datasets in separate directories.
+    if args.scale == "full":
+        GENERATED_DIR = BASE_DIR / "data" / "generated_full"
+        GROUND_TRUTH_DIR = BASE_DIR / "data" / "ground_truth_full"
+        MANIFEST_DIR = BASE_DIR / "data" / "manifests_full"
+    else:
+        GENERATED_DIR = BASE_DIR / "data" / "generated"
+        GROUND_TRUTH_DIR = BASE_DIR / "data" / "ground_truth"
+        MANIFEST_DIR = BASE_DIR / "data" / "manifests"
+
     rng = random.Random(args.seed)
 
     # Dataset sizes.

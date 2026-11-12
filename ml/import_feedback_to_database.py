@@ -1,13 +1,4 @@
-
-"""
-Import generated synthetic InsightPulse AI CSV files into SQLite.
-
-Run from the repository root:
-    PYTHONPATH=backend python ml/import_feedback_to_database.py
-
-Existing records with matching primary keys are skipped.
-"""
-
+import argparse
 import csv
 from datetime import datetime
 from pathlib import Path
@@ -26,9 +17,25 @@ from app.models.action_item import ActionItem
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-GENERATED_DIR = BASE_DIR / "data" / "generated"
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Import InsightPulse AI synthetic data into SQLite."
+    )
+    parser.add_argument(
+        "--scale",
+        choices=["starter", "full"],
+        default="starter",
+        help="Dataset scale to import."
+    )
+    return parser.parse_args()
 
 
+args = parse_args()
+
+if args.scale == "full":
+    GENERATED_DIR = BASE_DIR / "data" / "generated_full"
+else:
+    GENERATED_DIR = BASE_DIR / "data" / "generated"
 def read_csv(filename):
     path = GENERATED_DIR / filename
 

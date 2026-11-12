@@ -6,95 +6,121 @@ import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-RAW_DATA_PATH = BASE_DIR / "data" / "raw" / "customer_reviews.csv"
-PROCESSED_DATA_PATH = (
-    BASE_DIR / "data" / "generated" / "cleaned_customer_reviews.csv"
+RAW_DATA_PATH = (
+    BASE_DIR / "data" / "generated_full" / "reviews.csv"
 )
+
+PROCESSED_DATA_PATH = (
+    BASE_DIR / "data" / "generated_full" / "cleaned_reviews.csv"
+)
+
+REQUIRED_SENTIMENTS = {
+    "Positive",
+    "Neutral",
+    "Negative",
+    "Mixed",
+}
 
 
 def prepare_dataset():
-    print("Loading customer review dataset...")
+    print("Loading synthetic customer reviews...")
 
     if not RAW_DATA_PATH.exists():
-        raise FileNotFoundError(f"Dataset not found: {RAW_DATA_PATH}")
+        raise FileNotFoundError(
+            f"Dataset not found: {RAW_DATA_PATH}"
+        )
 
     df = pd.read_csv(RAW_DATA_PATH)
 
-    required_columns = [
-        "Review Text",
-        "Rating",
-        "Clothing ID",
-        "Department Name",
-        "Class Name",
-    ]
+    required_columns = {
+        "review_id",
+        "review_text",
+        "sentiment",
+    }
 
-    missing_columns = [
-        column for column in required_columns
-        if column not in df.columns
-    ]
+    missing_columns = required_columns - set(df.columns)
 
     if missing_columns:
-        raise ValueError(f"Missing dataset columns: {missing_columns}")
+        raise ValueError(
+            f"Missing required columns: {sorted(missing_columns)}"
+        )
 
-    # Preserve review text, rating, and original product information.
-    df = df[required_columns].copy()
+    # Keep only the fields required for sentiment training.
+    df = df[
+        ["review_id", "review_text", "sentiment"]
+    ].copy()
 
-    # Remove missing or empty review text.
-    df = df.dropna(subset=["Review Text"])
-    df["Review Text"] = df["Review Text"].astype(str).str.strip()
-    df = df[df["Review Text"] != ""]
+    df = df.dropna(
+        subset=["review_text", "sentiment"]
+    )
 
-    # Remove duplicate reviews.
-    df = df.drop_duplicates(subset=["Review Text"]).copy()
+    df["review_text"] = (
+        df["review_text"].astype(str).str.strip()
+    )
 
-    # Preserve missing product categories transparently.
-    df["Department Name"] = df["Department Name"].fillna("Uncategorized")
-    df["Class Name"] = df["Class Name"].fillna("Uncategorized")
+    df["sentiment"] = (
+        df["sentiment"].astype(str).str.strip()
+    )
 
-    # Convert ratings into sentiment labels.
-    def assign_sentiment(rating):
-        if rating <= 2:
-            return "negative"
-        elif rating == 3:
-            return "neutral"
-        return "positive"
+    df = df[df["review_text"] != ""]
 
-    df["sentiment"] = df["Rating"].apply(assign_sentiment)
+    # Remove sentences assigned multiple sentiment labels.
+    label_counts = (
+        df.groupby("review_text")["sentiment"].nunique()
+    )
 
-    # Rename columns for application usage.
+    conflicting_texts = label_counts[
+        label_counts > 1
+    ].index
+
+    df = df[
+        ~df["review_text"].isin(conflicting_texts)
+    ].copy()
+
+    # Exclude the known injected sentiment contradiction.
+    df = df[
+        df["review_id"] != "REV-2026-000001"
+    ].copy()
+
+    # Keep one example per unique sentence.
+    df = df.drop_duplicates(
+        subset=["review_text"]
+    ).copy()
+
+    # Validate the four required sentiment classes.
+    actual_sentiments = set(df["sentiment"].unique())
+
+    if actual_sentiments != REQUIRED_SENTIMENTS:
+        raise ValueError(
+            f"Unexpected sentiment labels: {actual_sentiments}"
+        )
+
+    # Rename columns for the ML pipeline.
     df = df.rename(
         columns={
-            "Review Text": "text",
-            "Clothing ID": "clothing_id",
-            "Department Name": "department",
-            "Class Name": "product_class",
+            "review_text": "text",
         }
     )
 
-    PROCESSED_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
+    df = df[["review_id", "text", "sentiment"]]
+
+    PROCESSED_DATA_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     df.to_csv(
         PROCESSED_DATA_PATH,
         index=False,
-        encoding="utf-8"
     )
 
-    print("\nDataset preparation completed!")
-    print("Total reviews:", len(df))
+    print("\nDataset preparation completed.")
+    print(f"Original input rows: {len(pd.read_csv(RAW_DATA_PATH))}")
+    print(f"Prepared unique examples: {len(df)}")
+    print(f"Output: {PROCESSED_DATA_PATH}")
 
     print("\nSentiment distribution:")
-    print(df["sentiment"].value_counts())
-
-    print("\nProduct class distribution:")
-    print(df["product_class"].value_counts())
-
-    print("\nDepartment distribution:")
-    print(df["department"].value_counts())
-
-    print("\nFinal columns:")
-    print(df.columns.tolist())
-
-    print("\nSaved to:", PROCESSED_DATA_PATH)
+    print(df["sentiment"].value_counts().sort_index())
 
 
 if __name__ == "__main__":
