@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
@@ -52,5 +52,15 @@ def create_review(
 
 
 @router.get("/", response_model=list[ReviewResponse])
-def get_reviews(db: Session = Depends(get_db)):
-    return db.query(Review).all()
+def get_reviews(
+    db: Session = Depends(get_db),
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=500)
+):
+    return (
+        db.query(Review)
+        .order_by(Review.review_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
