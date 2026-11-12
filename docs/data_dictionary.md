@@ -5,7 +5,6 @@
 InsightPulse AI is a Customer Feedback Intelligence Platform that combines customer reviews, survey responses, and support messages to identify recurring themes, sentiment patterns, service priorities, and data-quality anomalies.
 
 ### Synthetic Data Configuration
-
 | Configuration | Value |
 |---|---|
 | Random seed | `20261022` |
@@ -21,7 +20,6 @@ InsightPulse AI is a Customer Feedback Intelligence Platform that combines custo
 The generator supports starter and full dataset configurations.
 
 ## 2. ID Conventions
-
 | Entity | ID format | Example |
 |---|---|---|
 | Customer | CUS-000001 | CUS-000001 |
@@ -45,9 +43,13 @@ Primary keys are immutable record identifiers within the application.
 The following sections describe the ten core entities and their implemented database fields.
 
 **Field notation:**
+
 - Required: database column is declared NOT NULL.
+
 - Optional: database column permits NULL.
+
 - Default: value supplied by the database when one is configured.
+
 - Primary key: identifies a unique database record.
 
 ### 3.1 Customer
@@ -55,7 +57,6 @@ The following sections describe the ten core entities and their implemented data
 **Table:** `customers`
 
 **Purpose:** Stores synthetic customer information.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | customer_id | VARCHAR(50) | Yes | Primary key | Customer identifier |
@@ -69,7 +70,6 @@ The following sections describe the ten core entities and their implemented data
 **Table:** `products`
 
 **Purpose:** Stores product information associated with customer feedback.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | product_id | VARCHAR(50) | Yes | Primary key | Product identifier |
@@ -83,7 +83,6 @@ The following sections describe the ten core entities and their implemented data
 **Table:** `channels`
 
 **Purpose:** Identifies the channel through which customer feedback is received.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | channel_id | VARCHAR(50) | Yes | Primary key | Channel identifier |
@@ -96,7 +95,6 @@ The following sections describe the ten core entities and their implemented data
 **Table:** `surveys`
 
 **Purpose:** Stores survey information used to collect customer responses.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | survey_id | VARCHAR(50) | Yes | Primary key | Survey identifier |
@@ -110,7 +108,6 @@ The following sections describe the ten core entities and their implemented data
 **Table:** `survey_responses`
 
 **Purpose:** Stores customer responses submitted through surveys.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | response_id | VARCHAR(100) | Yes | Primary key | Survey response identifier |
@@ -132,7 +129,6 @@ The following sections describe the ten core entities and their implemented data
 **Table:** `reviews`
 
 **Purpose:** Stores customer product reviews and their associated analysis results.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | review_id | VARCHAR(50) | Yes | Primary key | Review identifier |
@@ -152,7 +148,6 @@ The following sections describe the ten core entities and their implemented data
 **Table:** `support_messages`
 
 **Purpose:** Stores customer support conversations and feedback.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | message_id | VARCHAR(100) | Yes | Primary key | Support message identifier |
@@ -171,7 +166,6 @@ The following sections describe the ten core entities and their implemented data
 **Table:** `themes`
 
 **Purpose:** Defines customer feedback classification categories.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | theme_id | VARCHAR(50) | Yes | Primary key | Theme identifier |
@@ -182,7 +176,9 @@ The following sections describe the ten core entities and their implemented data
 Configured theme categories:
 
 - Performance
+
 - Customer Support
+
 - Feature Request
 
 ### 3.9 SentimentLabel
@@ -190,7 +186,6 @@ Configured theme categories:
 **Table:** `sentiment_labels`
 
 **Purpose:** Defines the sentiment categories used by the feedback analysis system.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | sentiment_id | VARCHAR(50) | Yes | Primary key | Sentiment identifier |
@@ -201,8 +196,11 @@ Configured theme categories:
 Configured sentiment categories:
 
 - Positive
+
 - Negative
+
 - Neutral
+
 - Mixed
 
 **Important schema note:** This is a standalone lookup table. The sentiment fields in reviews, survey responses, and support messages do not have enforced foreign keys to `sentiment_labels`.
@@ -212,7 +210,6 @@ Configured sentiment categories:
 **Table:** `action_items`
 
 **Purpose:** Stores recommended actions generated from customer feedback analysis.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | action_id | VARCHAR(50) | Yes | Primary key | Action identifier |
@@ -239,7 +236,6 @@ The following supporting entities provide source traceability and data-quality i
 **Table:** `action_item_feedback`
 
 **Purpose:** Links action items to the feedback records used as supporting evidence.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | mapping_id | VARCHAR(50) | Yes | Primary key | Mapping identifier |
@@ -261,11 +257,17 @@ This entity is not currently implemented in the database.
 Proposed fields:
 
 - history_id: Unique history identifier.
+
 - action_id: Foreign key to ActionItem.
+
 - previous_status: Previous lifecycle state.
+
 - new_status: Updated lifecycle state.
+
 - changed_at: Timestamp of the change.
+
 - changed_by: System or user identifier.
+
 - reason: Explanation for the change.
 
 Historical lifecycle tracking must be treated as planned functionality until an implementation is added and verified.
@@ -275,7 +277,6 @@ Historical lifecycle tracking must be treated as planned functionality until an 
 **Table:** `anomaly_records`
 
 **Purpose:** Stores detected data-quality and exception issues.
-
 | Field | SQL type | Required | Key / Default | Description and validation |
 |---|---|---|---|---|
 | anomaly_id | VARCHAR(50) | Yes | Primary key | Anomaly identifier |
@@ -301,8 +302,11 @@ The source response includes the source type, source identifier, feedback text, 
 **PII protection in supported source API responses:**
 
 - Email addresses are replaced with `[REDACTED EMAIL]`.
+
 - Indian phone numbers are replaced with `[REDACTED PHONE]`.
+
 - Original feedback text remains unchanged in the database.
+
 - Original records are retained for anomaly detection and investigation.
 
 The masking behavior applies to supported API response workflows; it should not be interpreted as encryption or removal of original source data.
@@ -310,7 +314,6 @@ The masking behavior applies to supported API response workflows; it should not 
 ## 5. Relationships and Cardinality
 
 The following relationships reflect the implemented database foreign keys.
-
 | Parent | Child | Cardinality | Optionality |
 |---|---|---|---|
 | Customer | Review | 1:N | Review requires customer |
@@ -339,22 +342,35 @@ SentimentLabel is a standalone lookup table and does not have enforced relations
 ### Database integrity notes
 
 - Primary keys are defined for all 12 implemented tables.
+
 - The foreign-key relationships listed above are enforced by the schema.
+
 - Optional relationships are represented by nullable foreign-key columns.
+
 - No additional uniqueness constraints on fields such as customer email, product name, channel name, or theme name are established by the inspected schema.
+
 - Application-level validation and database-level constraints should be distinguished when documenting allowed values.
 
 ## 6. Sentiment and Theme Business Rules
 
 1. The platform uses four sentiment categories: Positive, Negative, Neutral, and Mixed.
+
 2. The configured theme taxonomy contains Performance, Customer Support, and Feature Request.
+
 3. Mixed sentiment represents feedback containing both positive and negative signals.
+
 4. Model predictions and ground-truth evaluation labels must remain separate.
+
 5. Ground-truth labels must not be used as prediction input.
+
 6. Prediction confidence values are represented as floating-point values.
+
 7. Invalid theme assignments are identified as data-quality issues.
+
 8. Original feedback records are retained.
+
 9. PII is masked in supported source API responses.
+
 10. Action-item recommendations are associated with supporting feedback records.
 
 ## 7. Data Generation Rules
@@ -362,20 +378,30 @@ SentimentLabel is a standalone lookup table and does not have enforced relations
 The synthetic data generator uses the following documented configuration and rules:
 
 1. Generate master records before dependent records.
+
 2. Generate dependent records using valid parent identifiers.
+
 3. Use a fixed random seed of `20261022` by default.
+
 4. Generate 30,000 reviews and 20,001 survey responses in the full dataset.
+
 5. Generate 20,000 support messages in the full dataset.
+
 6. Include multilingual, neutral, mixed, sarcastic, and ambiguous examples.
+
 7. Generate baseline records before injecting deliberate anomaly cases.
+
 8. Keep ground-truth data separate from model inputs.
+
 9. Derive analytical totals and percentages from source records.
+
 10. Validate primary keys, foreign keys, allowed values, dates, and duplicate cases.
+
 11. Preserve the distinction between source feedback, model predictions, and ground-truth labels.
+
 12. Export generated data and validation information in the supported formats.
 
 ### Dataset counts
-
 | Dataset | Full-scale records |
 |---|---:|
 | Customers | 5,000 |
@@ -390,7 +416,6 @@ The synthetic data generator uses the following documented configuration and rul
 The full dataset includes one deliberately injected duplicate survey response.
 
 ### Sentiment distribution
-
 | Sentiment | Records |
 |---|---:|
 | Positive | 17,501 |
@@ -399,7 +424,6 @@ The full dataset includes one deliberately injected duplicate survey response.
 | Mixed | 17,500 |
 
 ## 8. Required Anomaly Types
-
 | Issue type | Expected detection |
 |---|---|
 | Contradictory sentiment label | Detect disagreement between the stored label and feedback text |
@@ -420,11 +444,17 @@ Ground-truth records are reserved for evaluation and must never be used as predi
 The sentiment training pipeline uses:
 
 1. Synthetic review text.
+
 2. Text preprocessing.
+
 3. Duplicate and conflicting-label removal.
+
 4. Ground-truth review exclusion.
+
 5. TF-IDF vectorization using unigrams and bigrams.
+
 6. Logistic Regression classification.
+
 7. Stratified training and testing split.
 
 The dataset preparation script excludes review records identified in the separate ground-truth dataset.
@@ -432,13 +462,16 @@ The dataset preparation script excludes review records identified in the separat
 The training process also rejects evaluation-related columns such as:
 
 - `test_label`
+
 - `ground_truth`
+
 - `expected_sentiment`
+
 - `expected_decision`
+
 - `issue_type`
 
 ### Latest recorded sentiment evaluation
-
 | Metric | Result |
 |---|---:|
 | Test accuracy | 68.97% |
@@ -456,9 +489,13 @@ These results are preliminary and are based on a small synthetic training datase
 The evaluation framework identifies the following metrics:
 
 - Accuracy
+
 - Precision
+
 - Recall
+
 - F1-score
+
 - Confusion matrix
 
 Theme classification evaluation should be reported separately when measured results are available. No theme evaluation score is asserted in this document.
@@ -470,16 +507,20 @@ The ground-truth dataset is maintained separately from model-training inputs.
 The six documented evaluation cases cover:
 
 1. Sentiment-label contradiction.
+
 2. Duplicate survey submission.
+
 3. PII leakage.
+
 4. Invalid theme assignment.
+
 5. Rating-text mismatch.
+
 6. Model-input leakage.
 
 The preparation process identifies three ground-truth review records and excludes them from the sentiment training dataset.
 
 The latest recorded preparation result:
-
 | Check | Result |
 |---|---:|
 | Original input rows | 30,000 |
@@ -490,6 +531,16 @@ The latest recorded preparation result:
 | Final prepared unique examples | 144 |
 | Ground-truth leakage check | PASSED |
 
+### Ground-Truth Case References
+The six cases are represented by the following known records or probes:
+1. Contradictory sentiment label — REV-2026-000001: the stored sentiment conflicts with the review text; the expected text-based sentiment is Negative.
+2. Duplicate survey response — RESP-SUR-2026-000001-201: a deliberately duplicated response corresponding to RESP-SUR-2026-000001-001.
+3. Synthetic PII exposure — MSG-TKT-2026-000001-001: a support message contains a synthetic email address that should be detected by the PII/anomaly checks.
+4. Out-of-taxonomy theme — REV-2026-000002: the record is assigned the theme Billing, which is outside the configured taxonomy of Performance, Customer Support, and Feature Request.
+5. Rating-text mismatch — REV-2026-000003: the review has a rating of 5 while its text is expected to be Negative, creating a rating/text inconsistency.
+6. Model-input leakage probe — LEAKAGE-PROBE-000001: a forbidden evaluation feature (test_label) is used to verify that evaluation-only labels are rejected from model-training inputs.
+The three ground-truth review records are excluded by the preparation pipeline. The duplicate response and the other non-review cases remain evaluation/anomaly scenarios and are not treated as additional sentiment-training examples.
+
 ## 11. Reproducibility and Validation
 
 The synthetic data generator supports a configurable random seed and starter/full dataset configurations.
@@ -499,10 +550,15 @@ The project generates validation manifests containing dataset information, row c
 ### Verified validation results
 
 - Full dataset manifest validation passed.
+
 - No validation errors were reported in the recorded full dataset validation.
+
 - Six ground-truth evaluation cases were verified.
+
 - The deliberately injected duplicate survey response was verified.
+
 - Ground-truth review exclusion from sentiment training was verified.
+
 - The prepared sentiment dataset passed its ground-truth leakage check.
 
 ### Reproducibility status
@@ -514,7 +570,6 @@ A separate two-run comparison using identical configuration and seed should be r
 ## 12. Implemented Database Tables
 
 The inspected SQLite database contains 12 implemented tables:
-
 | Table | Purpose |
 |---|---|
 | customers | Customer information |
@@ -539,11 +594,17 @@ This document describes the inspected SQLite schema and the documented applicati
 The following distinctions are important:
 
 - Database-enforced foreign keys are documented separately from logical source references.
+
 - Optional fields are based on the actual SQLite nullability metadata.
+
 - Database column types are documented as inspected.
+
 - Application-level validation rules are not automatically database constraints.
+
 - Planned history tracking is not described as implemented functionality.
+
 - Evaluation metrics are only reported where recorded results are available.
+
 - Reproducibility claims must be supported by repeat-generation evidence.
 
 ---
