@@ -1,4 +1,3 @@
-
 import argparse
 import csv
 import hashlib
@@ -139,12 +138,16 @@ PII_EXAMPLE = (
     "because my account issue is unresolved."
 )
 
+DATA_START = datetime(2025, 1, 1)
+DATA_END = datetime(2026, 10, 31)
+
 
 # =========================================================
 # 2. FILE HELPERS
 # =========================================================
 
 def write_csv(filename, rows):
+    """Write a list of dictionaries to a CSV file."""
     if not rows:
         return
 
@@ -160,6 +163,7 @@ def write_csv(filename, rows):
 
 
 def write_json(path, data):
+    """Write JSON with readable formatting and Unicode support."""
     with path.open("w", encoding="utf-8") as file:
         json.dump(
             data,
@@ -170,6 +174,7 @@ def write_json(path, data):
 
 
 def calculate_checksum(path):
+    """Calculate SHA-256 checksum for a generated file."""
     digest = hashlib.sha256()
 
     with path.open("rb") as file:
@@ -182,17 +187,26 @@ def calculate_checksum(path):
     return digest.hexdigest()
 
 
-def random_date(rng):
-    start = datetime(2025, 1, 1)
-    end = datetime(2026, 10, 31)
+def random_date(rng, start=DATA_START, end=DATA_END):
+    """Return a reproducible random ISO timestamp within a date range."""
+    if start > end:
+        raise ValueError("Date range start cannot be after end.")
 
-    days = (end - start).days
-
-    result = start + timedelta(
-        days=rng.randint(0, days)
-    )
+    days = (end.date() - start.date()).days
+    result = start + timedelta(days=rng.randint(0, days))
 
     return result.strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def parse_date(value, field_name, errors, record_id):
+    """Parse an ISO date or timestamp and record a validation error."""
+    try:
+        return datetime.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        errors.append(
+            f"Invalid date in {field_name} for record {record_id}: {value}"
+        )
+        return None
 
 
 # =========================================================
@@ -200,7 +214,6 @@ def random_date(rng):
 # =========================================================
 
 def generate_masters(rng, customer_count, survey_count):
-
     customers = []
 
     for i in range(1, customer_count + 1):
@@ -270,20 +283,16 @@ def generate_masters(rng, customer_count, survey_count):
 # =========================================================
 
 def choose_text(rng, theme, sentiment, index):
-
     if index % 97 == 0:
         return rng.choice(MULTILINGUAL_TEXT)
 
     if index % 113 == 0:
         return rng.choice(AMBIGUOUS_TEXT)
 
-    return rng.choice(
-        THEME_TEXT[theme][sentiment]
-    )
+    return rng.choice(THEME_TEXT[theme][sentiment])
 
 
 def choose_rating(rng, sentiment):
-
     if sentiment == "Positive":
         return rng.randint(4, 5)
 
@@ -308,7 +317,6 @@ def generate_feedback_rows(
     surveys,
     index_offset=0
 ):
-
     rows = []
 
     customer_ids = [
@@ -316,8 +324,6 @@ def generate_feedback_rows(
         for customer in customers
     ]
 
-    # PRODUCTS and CHANNELS contain tuples.
-    # Extract their first elements for foreign keys.
     product_ids = [
         product[0]
         for product in PRODUCTS
@@ -333,11 +339,16 @@ def generate_feedback_rows(
         for survey in surveys
     ]
 
-    for index in range(1, count + 1):
+    survey_start_dates = {
+        survey["survey_id"]: datetime.fromisoformat(
+            survey["start_date"]
+        )
+        for survey in surveys
+    }
 
+    for index in range(1, count + 1):
         global_index = index + index_offset
 
-        # Balanced sentiment and theme distribution.
         sentiment = SENTIMENTS[
             (index - 1) % len(SENTIMENTS)
         ]
@@ -353,7 +364,21 @@ def generate_feedback_rows(
             global_index
         )
 
-        created_at = random_date(rng)
+        survey_id = None
+
+        if record_type == "survey":
+            survey_id = survey_ids[
+                (index - 1) % len(survey_ids)
+            ]
+
+            # Survey responses must not predate their survey.
+            created_at = random_date(
+                rng,
+                start=survey_start_dates[survey_id],
+                end=DATA_END
+            )
+        else:
+            created_at = random_date(rng)
 
         common = {
             "customer_id": rng.choice(customer_ids),
@@ -372,7 +397,6 @@ def generate_feedback_rows(
         }
 
         if record_type == "review":
-
             row = {
                 "review_id": f"REV-2026-{index:06d}",
                 **common,
@@ -380,12 +404,7 @@ def generate_feedback_rows(
                 "rating": choose_rating(rng, sentiment),
             }
 
-        else:
-
-            survey_id = survey_ids[
-                (index - 1) % len(survey_ids)
-            ]
-
+        elif record_type == "survey":
             response_number = (
                 (index - 1) // len(survey_ids)
             ) + 1
@@ -400,6 +419,11 @@ def generate_feedback_rows(
                 "submitted_at": created_at,
             }
 
+        else:
+            raise ValueError(
+                "record_type must be 'review' or 'survey'."
+            )
+
         rows.append(row)
 
     return rows
@@ -410,7 +434,6 @@ def generate_feedback_rows(
 # =========================================================
 
 def generate_support_messages(rng, count, customers):
-
     rows = []
 
     customer_ids = [
@@ -424,7 +447,6 @@ def generate_support_messages(rng, count, customers):
     ]
 
     for index in range(1, count + 1):
-
         sentiment = SENTIMENTS[
             (index - 1) % len(SENTIMENTS)
         ]
@@ -474,13 +496,11 @@ def generate_support_messages(rng, count, customers):
 # =========================================================
 
 def generate_action_items(reviews, responses, messages):
-
     all_feedback = reviews + responses + messages
 
     action_items = []
 
     for index, theme in enumerate(THEMES, start=1):
-
         matching = [
             row for row in all_feedback
             if row["predicted_theme"] == theme
@@ -533,19 +553,13 @@ def generate_action_items(reviews, responses, messages):
 # =========================================================
 
 def inject_edge_cases(reviews, responses, messages):
-
     ground_truth = []
 
-    # -----------------------------------------------------
-    # CASE 1: Sentiment contradicts feedback text
-    # -----------------------------------------------------
-
+    # CASE 1: Sentiment contradicts feedback text.
     row = reviews[0]
-
     row["review_text"] = (
         "The application is terrible, slow and keeps crashing."
     )
-
     row["feedback_text"] = row["review_text"]
     row["sentiment"] = "Positive"
 
@@ -557,25 +571,16 @@ def inject_edge_cases(reviews, responses, messages):
         "expected_sentiment": "Negative",
     })
 
-    # -----------------------------------------------------
-    # CASE 2: Duplicate survey response
-    # -----------------------------------------------------
-
+    # CASE 2: Duplicate survey response with a distinct primary key.
     original = responses[0]
-
     duplicate = original.copy()
-
     survey_id = original["survey_id"]
 
-    # Keep the required response ID format.
-    existing_numbers = []
-
-    for response in responses:
-        if response["survey_id"] == survey_id:
-            response_id = response["response_id"]
-            existing_numbers.append(
-                int(response_id.rsplit("-", 1)[1])
-            )
+    existing_numbers = [
+        int(response["response_id"].rsplit("-", 1)[1])
+        for response in responses
+        if response["survey_id"] == survey_id
+    ]
 
     next_number = max(existing_numbers) + 1
 
@@ -583,8 +588,6 @@ def inject_edge_cases(reviews, responses, messages):
         f"RESP-{survey_id}-{next_number:03d}"
     )
 
-    # All submission fields remain the same.
-    # Only the immutable primary ID is different.
     responses.append(duplicate)
 
     ground_truth.append({
@@ -595,12 +598,8 @@ def inject_edge_cases(reviews, responses, messages):
         "duplicate_of": original["response_id"],
     })
 
-    # -----------------------------------------------------
-    # CASE 3: Synthetic PII in feedback
-    # -----------------------------------------------------
-
+    # CASE 3: Synthetic PII in feedback.
     row = messages[0]
-
     row["message_text"] = PII_EXAMPLE
 
     ground_truth.append({
@@ -611,12 +610,8 @@ def inject_edge_cases(reviews, responses, messages):
         "synthetic_value": "test.person@example.com",
     })
 
-    # -----------------------------------------------------
-    # CASE 4: Theme outside allowed taxonomy
-    # -----------------------------------------------------
-
+    # CASE 4: Theme outside the approved taxonomy.
     row = reviews[1]
-
     row["predicted_theme"] = "Billing"
 
     ground_truth.append({
@@ -628,18 +623,12 @@ def inject_edge_cases(reviews, responses, messages):
         "allowed_themes": THEMES,
     })
 
-    # -----------------------------------------------------
-    # CASE 5: Rating-text mismatch
-    # -----------------------------------------------------
-
+    # CASE 5: Rating-text mismatch.
     row = reviews[2]
-
     row["rating"] = 5
-
     row["review_text"] = (
         "Very disappointed. The product does not work at all."
     )
-
     row["feedback_text"] = row["review_text"]
 
     ground_truth.append({
@@ -651,10 +640,7 @@ def inject_edge_cases(reviews, responses, messages):
         "expected_sentiment": "Negative",
     })
 
-    # -----------------------------------------------------
-    # CASE 6: Test label leakage fixture
-    # -----------------------------------------------------
-
+    # CASE 6: Deliberately contaminated fixture for leakage testing.
     probe = [{
         "record_id": "LEAKAGE-PROBE-000001",
         "text": "The application is very slow and unreliable.",
@@ -687,85 +673,232 @@ def validate_dataset(
     responses,
     messages
 ):
-
     errors = []
+
+    # Primary-key checks across every generated entity.
+    primary_key_checks = [
+        ("customer_id", customers),
+        ("product_id", products),
+        ("channel_id", channels),
+        ("survey_id", surveys),
+        ("review_id", reviews),
+        ("response_id", responses),
+        ("message_id", messages),
+    ]
+
+    for field, rows in primary_key_checks:
+        values = [row.get(field) for row in rows]
+
+        if any(
+            value is None or str(value).strip() == ""
+            for value in values
+        ):
+            errors.append(
+                f"Missing or empty primary key: {field}"
+            )
+
+        non_empty_values = [
+            value for value in values
+            if value is not None and str(value).strip() != ""
+        ]
+
+        if len(non_empty_values) != len(set(non_empty_values)):
+            errors.append(
+                f"Duplicate primary key detected: {field}"
+            )
 
     customer_ids = {
         row["customer_id"] for row in customers
     }
-
     product_ids = {
         row["product_id"] for row in products
     }
-
     channel_ids = {
         row["channel_id"] for row in channels
     }
-
-    survey_ids = {
-        row["survey_id"] for row in surveys
+    survey_lookup = {
+        row["survey_id"]: row for row in surveys
+    }
+    theme_ids = {
+        f"THEME-{index:06d}"
+        for index, _ in enumerate(THEMES, start=1)
     }
 
-    review_ids = [
-        row["review_id"] for row in reviews
-    ]
+    # Foreign keys and value constraints for reviews.
+    for row in reviews:
+        record_id = row.get("review_id", "<unknown>")
 
-    response_ids = [
-        row["response_id"] for row in responses
-    ]
-
-    message_ids = [
-        row["message_id"] for row in messages
-    ]
-
-    # Primary key checks.
-    for name, values in [
-        ("review_id", review_ids),
-        ("response_id", response_ids),
-        ("message_id", message_ids),
-    ]:
-
-        if len(values) != len(set(values)):
+        if row.get("customer_id") not in customer_ids:
             errors.append(
-                f"Duplicate primary key detected: {name}"
+                f"Invalid customer foreign key in review {record_id}"
             )
 
-    # Foreign key checks for reviews.
-    for row in reviews:
-        if row["customer_id"] not in customer_ids:
-            errors.append("Invalid customer foreign key in reviews")
+        if row.get("product_id") not in product_ids:
+            errors.append(
+                f"Invalid product foreign key in review {record_id}"
+            )
 
-        if row["product_id"] not in product_ids:
-            errors.append("Invalid product foreign key in reviews")
+        if row.get("channel_id") not in channel_ids:
+            errors.append(
+                f"Invalid channel foreign key in review {record_id}"
+            )
 
-        if row["channel_id"] not in channel_ids:
-            errors.append("Invalid channel foreign key in reviews")
+        if row.get("theme_id") not in theme_ids:
+            errors.append(
+                f"Invalid theme foreign key in review {record_id}"
+            )
 
-    # Foreign key checks for survey responses.
+        if row.get("sentiment") not in SENTIMENTS:
+            errors.append(
+                f"Invalid sentiment in review {record_id}"
+            )
+
+        confidence = row.get("sentiment_confidence")
+        if not isinstance(confidence, (int, float)) or not 0 <= confidence <= 1:
+            errors.append(
+                f"Invalid sentiment confidence in review {record_id}"
+            )
+
+        rating = row.get("rating")
+        if not isinstance(rating, int) or not 1 <= rating <= 5:
+            errors.append(
+                f"Invalid rating in review {record_id}"
+            )
+
+        parse_date(
+            row.get("created_at"),
+            "reviews.created_at",
+            errors,
+            record_id
+        )
+
+    # Foreign keys, date ordering and value constraints for responses.
     for row in responses:
-        if row["customer_id"] not in customer_ids:
-            errors.append("Invalid customer foreign key in responses")
+        record_id = row.get("response_id", "<unknown>")
 
-        if row["product_id"] not in product_ids:
-            errors.append("Invalid product foreign key in responses")
+        if row.get("customer_id") not in customer_ids:
+            errors.append(
+                f"Invalid customer foreign key in response {record_id}"
+            )
 
-        if row["channel_id"] not in channel_ids:
-            errors.append("Invalid channel foreign key in responses")
+        if row.get("product_id") not in product_ids:
+            errors.append(
+                f"Invalid product foreign key in response {record_id}"
+            )
 
-        if row["survey_id"] not in survey_ids:
-            errors.append("Invalid survey foreign key in responses")
+        if row.get("channel_id") not in channel_ids:
+            errors.append(
+                f"Invalid channel foreign key in response {record_id}"
+            )
 
-    # Foreign key checks for support messages.
+        survey = survey_lookup.get(row.get("survey_id"))
+        if survey is None:
+            errors.append(
+                f"Invalid survey foreign key in response {record_id}"
+            )
+        else:
+            survey_start = parse_date(
+                survey.get("start_date"),
+                "surveys.start_date",
+                errors,
+                survey.get("survey_id", "<unknown>")
+            )
+            submitted_at = parse_date(
+                row.get("submitted_at"),
+                "survey_responses.submitted_at",
+                errors,
+                record_id
+            )
+
+            if (
+                survey_start is not None
+                and submitted_at is not None
+                and submitted_at < survey_start
+            ):
+                errors.append(
+                    f"Response {record_id} was submitted before "
+                    f"survey {survey['survey_id']} started"
+                )
+
+        if row.get("theme_id") not in theme_ids:
+            errors.append(
+                f"Invalid theme foreign key in response {record_id}"
+            )
+
+        if row.get("sentiment") not in SENTIMENTS:
+            errors.append(
+                f"Invalid sentiment in response {record_id}"
+            )
+
+        confidence = row.get("sentiment_confidence")
+        if not isinstance(confidence, (int, float)) or not 0 <= confidence <= 1:
+            errors.append(
+                f"Invalid sentiment confidence in response {record_id}"
+            )
+
+        created_at = parse_date(
+            row.get("created_at"),
+            "survey_responses.created_at",
+            errors,
+            record_id
+        )
+        submitted_at = parse_date(
+            row.get("submitted_at"),
+            "survey_responses.submitted_at",
+            errors,
+            record_id
+        )
+
+        if (
+            created_at is not None
+            and submitted_at is not None
+            and created_at != submitted_at
+        ):
+            errors.append(
+                f"created_at and submitted_at differ in response {record_id}"
+            )
+
+    # Foreign keys and value constraints for support messages.
     for row in messages:
-        if row["customer_id"] not in customer_ids:
-            errors.append("Invalid customer foreign key in messages")
+        record_id = row.get("message_id", "<unknown>")
 
-        if row["channel_id"] not in channel_ids:
-            errors.append("Invalid channel foreign key in messages")
+        if row.get("customer_id") not in customer_ids:
+            errors.append(
+                f"Invalid customer foreign key in message {record_id}"
+            )
 
-    # Theme validation is intentionally not performed against
-    # predicted_theme here because an invalid theme is an
-    # injected anomaly that must be caught by the audit system.
+        if row.get("channel_id") not in channel_ids:
+            errors.append(
+                f"Invalid channel foreign key in message {record_id}"
+            )
+
+        if row.get("theme_id") not in theme_ids:
+            errors.append(
+                f"Invalid theme foreign key in message {record_id}"
+            )
+
+        if row.get("sentiment") not in SENTIMENTS:
+            errors.append(
+                f"Invalid sentiment in message {record_id}"
+            )
+
+        confidence = row.get("sentiment_confidence")
+        if not isinstance(confidence, (int, float)) or not 0 <= confidence <= 1:
+            errors.append(
+                f"Invalid sentiment confidence in message {record_id}"
+            )
+
+        parse_date(
+            row.get("created_at"),
+            "support_messages.created_at",
+            errors,
+            record_id
+        )
+
+    # Intentionally do NOT validate predicted_theme against the taxonomy
+    # here. The injected "Billing" value is an expected audit anomaly.
+    # Likewise, the duplicate business submission is intentionally retained
+    # for the anomaly scanner; its primary key remains unique.
 
     return errors
 
@@ -775,7 +908,6 @@ def validate_dataset(
 # =========================================================
 
 def main():
-
     parser = argparse.ArgumentParser(
         description="Generate synthetic InsightPulse AI data"
     )
@@ -793,58 +925,32 @@ def main():
     )
 
     args = parser.parse_args()
-
     rng = random.Random(args.seed)
 
-    # -----------------------------------------------------
-    # Dataset sizes
-    # -----------------------------------------------------
-
+    # Dataset sizes.
     if args.scale == "full":
-
         review_count = 30000
         response_count = 20000
         support_count = 20000
-
         customer_count = 5000
         survey_count = 100
-
     else:
-
         review_count = 300
         response_count = 200
         support_count = 200
-
         customer_count = 100
         survey_count = 5
 
-    # -----------------------------------------------------
-    # Create output directories
-    # -----------------------------------------------------
-
-    GENERATED_DIR.mkdir(
-        parents=True,
-        exist_ok=True
-    )
-
-    GROUND_TRUTH_DIR.mkdir(
-        parents=True,
-        exist_ok=True
-    )
-
-    MANIFEST_DIR.mkdir(
-        parents=True,
-        exist_ok=True
-    )
+    # Create output directories.
+    GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+    GROUND_TRUTH_DIR.mkdir(parents=True, exist_ok=True)
+    MANIFEST_DIR.mkdir(parents=True, exist_ok=True)
 
     print("Generating InsightPulse AI synthetic data...")
     print(f"Scale: {args.scale}")
     print(f"Seed: {args.seed}")
 
-    # -----------------------------------------------------
-    # Generate master tables first
-    # -----------------------------------------------------
-
+    # Generate master tables first.
     (
         customers,
         products,
@@ -858,10 +964,7 @@ def main():
         survey_count
     )
 
-    # -----------------------------------------------------
-    # Generate feedback tables
-    # -----------------------------------------------------
-
+    # Generate feedback tables.
     reviews = generate_feedback_rows(
         rng,
         review_count,
@@ -885,30 +988,21 @@ def main():
         customers
     )
 
-    # -----------------------------------------------------
-    # Inject edge cases after baseline generation
-    # -----------------------------------------------------
-
+    # Inject known edge cases after baseline generation.
     ground_truth, leakage_probe = inject_edge_cases(
         reviews,
         responses,
         messages
     )
 
-    # -----------------------------------------------------
-    # Generate derived action items
-    # -----------------------------------------------------
-
+    # Generate derived action items from the feedback records.
     action_items = generate_action_items(
         reviews,
         responses,
         messages
     )
 
-    # -----------------------------------------------------
-    # Export master tables
-    # -----------------------------------------------------
-
+    # Export master tables.
     write_csv("customers.csv", customers)
     write_csv("products.csv", products)
     write_csv("channels.csv", channels)
@@ -916,26 +1010,19 @@ def main():
     write_csv("themes.csv", themes)
     write_csv("sentiment_labels.csv", sentiment_labels)
 
-    # -----------------------------------------------------
-    # Export child/event tables
-    # -----------------------------------------------------
-
+    # Export event tables.
     write_csv("reviews.csv", reviews)
     write_csv("survey_responses.csv", responses)
     write_csv("support_messages.csv", messages)
     write_csv("action_items.csv", action_items)
 
-    # Deliberately contaminated test fixture.
-    # This must never be used as production model input.
+    # Deliberately contaminated fixture. Never use as production model input.
     write_csv(
         "model_input_adversarial.csv",
         leakage_probe
     )
 
-    # -----------------------------------------------------
-    # Export separate ground truth
-    # -----------------------------------------------------
-
+    # Keep evaluation ground truth separate from model inputs.
     write_json(
         GROUND_TRUTH_DIR / "ground_truth.json",
         {
@@ -948,10 +1035,7 @@ def main():
         }
     )
 
-    # -----------------------------------------------------
-    # Validate generated data
-    # -----------------------------------------------------
-
+    # Validate generated data.
     validation_errors = validate_dataset(
         customers,
         products,
@@ -969,15 +1053,11 @@ def main():
         for row in all_feedback
     )
 
-    # -----------------------------------------------------
-    # Validation summary
-    # -----------------------------------------------------
-
+    # Validation summary.
     summary = {
         "scale": args.scale,
         "seed": args.seed,
         "generated_at": datetime.now().isoformat(),
-
         "row_counts": {
             "customers": len(customers),
             "products": len(products),
@@ -988,13 +1068,9 @@ def main():
             "support_messages": len(messages),
             "action_items": len(action_items),
         },
-
         "sentiment_counts": dict(sentiment_counts),
-
         "ground_truth_cases": len(ground_truth),
-
         "validation_errors": validation_errors,
-
         "validation_status": (
             "PASSED"
             if not validation_errors
@@ -1007,10 +1083,7 @@ def main():
         summary
     )
 
-    # -----------------------------------------------------
-    # Source manifest and checksums
-    # -----------------------------------------------------
-
+    # Source manifest and file checksums.
     manifest = {
         "project": "InsightPulse AI",
         "generator": (
@@ -1023,7 +1096,6 @@ def main():
     }
 
     for path in sorted(GENERATED_DIR.glob("*.csv")):
-
         manifest["files"][path.name] = {
             "sha256": calculate_checksum(path),
             "size_bytes": path.stat().st_size,
@@ -1034,18 +1106,8 @@ def main():
         manifest
     )
 
-    # -----------------------------------------------------
-    # Final output
-    # -----------------------------------------------------
-
     print("\nGeneration completed.")
-
-    print(
-        json.dumps(
-            summary,
-            indent=2
-        )
-    )
+    print(json.dumps(summary, indent=2))
 
     if validation_errors:
         raise SystemExit(
@@ -1053,8 +1115,7 @@ def main():
         )
 
     print(
-        "\nSynthetic data generation and baseline "
-        "validation passed."
+        "\nSynthetic data generation and baseline validation passed."
     )
 
 
