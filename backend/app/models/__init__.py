@@ -10,3 +10,4 @@ from app.models.theme import Theme
 from app.models.sentiment_label import SentimentLabel
 from app.models.action_item import ActionItem
 from app.models.anomaly_record import AnomalyRecord
+from app.models.action_item_feedback import ActionItemFeedback
