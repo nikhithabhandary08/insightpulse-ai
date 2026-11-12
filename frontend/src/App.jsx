@@ -257,6 +257,88 @@ function App() {
     )
   }
 
+
+  function DashboardOverviewChart() {
+    const total = data?.total_feedback_analyzed ?? 0
+
+    const items = [
+      { key: 'positive', name: 'Positive', color: '#36C995' },
+      { key: 'neutral', name: 'Neutral', color: '#FFBD35' },
+      { key: 'negative', name: 'Negative', color: '#FF5265' },
+      { key: 'mixed', name: 'Mixed', color: '#9565F5' },
+    ]
+
+    let currentAngle = 0
+
+    const segments = items.map((item) => {
+      const percentage = Number(sentiment[item.key] ?? 0)
+      const start = currentAngle
+      currentAngle += percentage
+
+      return {
+        ...item,
+        percentage,
+        start,
+        end: currentAngle,
+        count: distribution[item.key] ?? 0,
+      }
+    })
+
+    const gradient = segments
+      .map((item) =>
+        `${item.color} ${item.start}% ${item.end}%`
+      )
+      .join(', ')
+
+    return (
+      <section className="dashboard-overview-card">
+        <div className="dashboard-chart-heading">
+          <div className="dashboard-chart-icon">▥</div>
+          <div>
+            <h2>Customer Feedback Overview</h2>
+            <p>Distribution of customer feedback by sentiment</p>
+          </div>
+        </div>
+
+        <div className="dashboard-chart-layout">
+          <div className="dashboard-donut-area">
+            <div
+              className="dashboard-donut"
+              style={{
+                background: `conic-gradient(${gradient})`,
+              }}
+            >
+              <div className="dashboard-donut-hole">
+                <strong>{total.toLocaleString()}</strong>
+                <span>Total</span>
+                <span>Feedback</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="dashboard-chart-legend">
+            {segments.map((item) => (
+              <div className="dashboard-legend-row" key={item.key}>
+                <div className="dashboard-legend-name">
+                  <span
+                    className="dashboard-legend-dot"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <strong>{item.name}</strong>
+                </div>
+
+                <strong className="dashboard-legend-value">
+                  {Number(item.count).toLocaleString()} ({item.percentage.toFixed(2)}%)
+                </strong>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+
   function ThemeList() {
     return (
       <section className="content-card">
@@ -299,21 +381,10 @@ function App() {
     )
   }
 
+  
   function DashboardPage() {
     return (
       <>
-        <section className="welcome-section">
-          <div>
-            <p className="eyebrow">CUSTOMER EXPERIENCE INTELLIGENCE</p>
-            <h2>Understand your customers better.</h2>
-            <p>
-              Explore feedback, discover customer patterns and turn
-              insights into meaningful actions.
-            </p>
-          </div>
-          <div className="welcome-symbol">✧</div>
-        </section>
-
         {data && (
           <section className="stats-grid">
             <StatCard
@@ -325,42 +396,42 @@ function App() {
 
             <StatCard
               title="Positive"
-              value={`${sentiment.positive ?? 0}%`}
-              detail={`${distribution.positive ?? 0} records`}
+              value={distribution.positive?.toLocaleString() ?? 0}
+              detail={`${sentiment.positive ?? 0}% of total`}
               icon="↗"
               color="green"
             />
 
             <StatCard
               title="Neutral"
-              value={`${sentiment.neutral ?? 0}%`}
-              detail={`${distribution.neutral ?? 0} records`}
+              value={distribution.neutral?.toLocaleString() ?? 0}
+              detail={`${sentiment.neutral ?? 0}% of total`}
               icon="◉"
               color="yellow"
             />
 
             <StatCard
               title="Negative"
-              value={`${sentiment.negative ?? 0}%`}
-              detail={`${distribution.negative ?? 0} records`}
+              value={distribution.negative?.toLocaleString() ?? 0}
+              detail={`${sentiment.negative ?? 0}% of total`}
               icon="↘"
               color="red"
             />
 
             <StatCard
               title="Mixed"
-              value={`${sentiment.mixed ?? 0}%`}
-              detail={`${distribution.mixed ?? 0} records`}
+              value={distribution.mixed?.toLocaleString() ?? 0}
+              detail={`${sentiment.mixed ?? 0}% of total`}
               icon="◈"
             />
           </section>
         )}
 
-        {data && <SentimentChart />}
-        {data && <ThemeList />}
+        {data && <DashboardOverviewChart />}
       </>
     )
   }
+
 
   function SentimentPage() {
     return (
@@ -494,6 +565,14 @@ function App() {
             icon="↑"
             color="yellow"
           />
+
+          <StatCard
+          title="Medium Priority"
+          value={actions.filter((a) => a.priority?.toLowerCase() === 'medium').length}
+          detail="Medium-priority actions"
+          icon="●"
+          color="yellow"
+          />
         </section>
 
         <section className="content-card">
@@ -528,7 +607,11 @@ function App() {
                 <div className="action-record-top">
                   <div>
                     <h3>{action.action_title || 'Untitled Action'}</h3>
-                    <p>{action.description}</p>
+                    <p>
+                    {id.startsWith('ACT-AUTO-')
+                    ? `${action.negative_percentage}% of ${action.source_count.toLocaleString()} feedback records for ${action.action_title.replace('Automatic: Improve ', '')} are negative. This exceeds the configured threshold of ${action.threshold_percentage}%. Investigate the linked feedback records and define corrective actions.`
+                    : action.description}
+                    </p>
                   </div>
 
                   <span className={`priority-badge priority-${(action.priority || 'medium').toLowerCase()}`}>
@@ -607,7 +690,7 @@ function App() {
 
           <StatCard
             title="High Severity"
-            value={summary.high ?? summary.high_severity ?? 0}
+            value={summary.by_severity?.High ?? 0}
             detail="High-severity records"
             icon="!"
             color="red"
@@ -615,7 +698,7 @@ function App() {
 
           <StatCard
             title="Medium Severity"
-            value={summary.medium ?? summary.medium_severity ?? 0}
+            value={summary.by_severity?.Medium ?? 0}
             detail="Medium-severity records"
             icon="◉"
             color="yellow"
@@ -623,7 +706,7 @@ function App() {
 
           <StatCard
             title="Low Severity"
-            value={summary.low ?? summary.low_severity ?? 0}
+            value={summary.by_severity?.Low ?? 0}
             detail="Low-severity records"
             icon="●"
             color="green"

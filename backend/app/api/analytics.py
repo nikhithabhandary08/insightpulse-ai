@@ -232,6 +232,9 @@ def get_sentiment_trends(
     }
 
 
+
+
+
 @router.get("/ai-insights")
 def get_ai_insights(db: Session = Depends(get_db)):
     feedback = get_all_feedback(db)
@@ -242,6 +245,7 @@ def get_ai_insights(db: Session = Depends(get_db)):
             detail="No customer feedback is available for analysis."
         )
 
+    # 1. Calculate overall sentiment analytics
     distribution, unclassified = get_sentiment_distribution(feedback)
 
     classified = sum(distribution.values())
@@ -252,6 +256,7 @@ def get_ai_insights(db: Session = Depends(get_db)):
         for sentiment, count in distribution.items()
     }
 
+    # 2. Calculate theme-wise sentiment analytics
     theme_results = get_theme_analytics(db)
     theme_sentiments = get_sentiment_by_theme(db)
 
@@ -269,6 +274,9 @@ def get_ai_insights(db: Session = Depends(get_db)):
             "theme": theme["theme_name"],
             "feedback_count": total,
             "sentiment_counts": counts,
+            "positive_percentage": round(
+                counts["positive"] / total * 100, 2
+            ) if total else 0,
             "negative_percentage": round(
                 counts["negative"] / total * 100, 2
             ) if total else 0
@@ -279,40 +287,120 @@ def get_ai_insights(db: Session = Depends(get_db)):
         reverse=True
     )
 
+    # 3. Identify highest positive and negative themes
+    highest_negative_themes = []
+    highest_positive_themes = []
+
+    if theme_analytics:
+        max_negative = max(
+            item["negative_percentage"]
+            for item in theme_analytics
+        )
+
+        max_positive = max(
+            item["positive_percentage"]
+            for item in theme_analytics
+        )
+
+        highest_negative_themes = [
+            item["theme"]
+            for item in theme_analytics
+            if item["negative_percentage"] == max_negative
+        ]
+
+        highest_positive_themes = [
+            item["theme"]
+            for item in theme_analytics
+            if item["positive_percentage"] == max_positive
+        ]
+
+    # 4. Build the verified report using Python
+    verified_findings = [
+        "OVERALL CUSTOMER FEEDBACK SUMMARY",
+        f"Total feedback analyzed: {len(feedback)}",
+        f"Classified feedback: {classified}",
+        f"Unclassified feedback: {unclassified}",
+        "",
+        "SENTIMENT DISTRIBUTION"
+    ]
+
+    for sentiment in SENTIMENTS:
+        verified_findings.append(
+            f"{sentiment.capitalize()}: "
+            f"{distribution.get(sentiment, 0)} "
+            f"({percentages.get(sentiment, 0)}%)"
+        )
+
+    verified_findings.extend([
+        "",
+        "THEME-WISE ANALYSIS"
+    ])
+
+    for item in theme_analytics:
+        verified_findings.append(
+            f"{item['theme']}: "
+            f"{item['feedback_count']} feedback records, "
+            f"{item['positive_percentage']}% positive, "
+            f"{item['negative_percentage']}% negative."
+        )
+
+    verified_findings.extend([
+        "",
+        "HIGHEST POSITIVE SENTIMENT",
+        ", ".join(highest_positive_themes)
+        if highest_positive_themes else "Not available",
+        "",
+        "HIGHEST NEGATIVE SENTIMENT",
+        ", ".join(highest_negative_themes)
+        if highest_negative_themes else "Not available",
+        "",
+        "DATA LIMITATION",
+        "This is synthetic customer feedback generated for "
+        "application testing and evaluation. It may not "
+        "represent real customer behaviour."
+    ])
+
+    verified_report = "\n".join(verified_findings)
+
+    # 5. Ask Llama to generate recommendations only
     prompt = f"""
 You are a professional customer feedback intelligence analyst.
 
-Analyze these database statistics from reviews, survey responses,
-and customer support messages.
+VERIFIED DATA:
+{json.dumps({
+    "total_feedback": len(feedback),
+    "classified_feedback": classified,
+    "unclassified_feedback": unclassified,
+    "sentiment_distribution": distribution,
+    "sentiment_percentages": percentages,
+    "theme_analytics": theme_analytics,
+    "highest_positive_themes": highest_positive_themes,
+    "highest_negative_themes": highest_negative_themes
+}, indent=2)}
 
-TOTAL FEEDBACK: {len(feedback)}
+TASK:
+Provide concise, practical recommendations for investigating
+and improving customer feedback themes.
 
-CLASSIFIED FEEDBACK: {classified}
+RULES:
+- This dataset is synthetic.
+- Do not invent customer complaints or experiences.
+- Do not assume causes such as errors, delays, or staff issues.
+- Do not present possible causes as observed facts.
+- Do not claim one theme has the highest negative sentiment
+  when multiple themes are tied.
+- Do not repeat the supplied statistics.
+- Do not repeat the same recommendation.
+- Do not invent business outcomes.
+- Frame recommendations as actions to investigate or evaluate.
+- Include recommendations for Performance, Customer Support,
+  and Feature Request.
+- Keep the response professional and concise.
 
-UNCLASSIFIED FEEDBACK: {unclassified}
-
-SENTIMENT COUNTS:
-{json.dumps(distribution)}
-
-SENTIMENT PERCENTAGES:
-{json.dumps(percentages)}
-
-THEME ANALYTICS:
-{json.dumps(theme_analytics[:8])}
-
-Write a concise business intelligence report with:
-
-1. Overall Customer Feedback Summary
-2. Positive Feedback Highlights
-3. Major Customer Concerns
-4. Actionable Business Recommendations
-
-IMPORTANT:
-- Use only the supplied statistics.
-- Do not invent causes or customer experiences.
-- Distinguish observed facts from possible explanations.
-- Include all four sentiment labels.
-- Mention limitations where evidence is insufficient.
+Return only:
+1. Areas to investigate
+2. Recommended actions
+3. Suggested follow-up measurements
 """
 
     try:
@@ -330,6 +418,13 @@ IMPORTANT:
             detail="Unable to connect to Ollama. Ensure Ollama is running."
         )
 
+    # 6. Combine verified findings and AI recommendations
+    final_report = (
+        verified_report
+        + "\n\nACTIONABLE BUSINESS RECOMMENDATIONS\n"
+        + ai_response
+    )
+
     return {
         "total_feedback_analyzed": len(feedback),
         "classified_feedback": classified,
@@ -337,5 +432,7 @@ IMPORTANT:
         "sentiment_distribution": distribution,
         "sentiment_percentages": percentages,
         "theme_analytics": theme_analytics,
-        "ai_insights": ai_response
+        "highest_positive_themes": highest_positive_themes,
+        "highest_negative_themes": highest_negative_themes,
+        "ai_insights": final_report
     }
