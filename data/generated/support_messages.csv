@@ -1,0 +1,201 @@
+message_id,ticket_id,customer_id,channel_id,message_text,sentiment,sentiment_confidence,theme_id,predicted_theme,created_at
+MSG-TKT-2026-000001-001,TKT-2026-000001,CUS-000037,CH-001,Please contact me at test.person@example.com because my account issue is unresolved.,Positive,0.858,THEME-000001,Performance,2026-07-25T00:00:00
+MSG-TKT-2026-000001-002,TKT-2026-000001,CUS-000047,CH-005,The team acknowledged my request.,Neutral,0.855,THEME-000002,Customer Support,2026-08-01T00:00:00
+MSG-TKT-2026-000001-003,TKT-2026-000001,CUS-000091,CH-003,I cannot find the feature that I need.,Negative,0.924,THEME-000003,Feature Request,2026-04-08T00:00:00
+MSG-TKT-2026-000001-004,TKT-2026-000001,CUS-000073,CH-002,"The system works well, but loading is inconsistent.",Mixed,0.93,THEME-000001,Performance,2025-05-24T00:00:00
+MSG-TKT-2026-000002-001,TKT-2026-000002,CUS-000046,CH-005,The support team resolved my problem quickly.,Positive,0.814,THEME-000002,Customer Support,2025-12-29T00:00:00
+MSG-TKT-2026-000002-002,TKT-2026-000002,CUS-000073,CH-001,I would like to know more about the available features.,Neutral,0.794,THEME-000003,Feature Request,2026-10-23T00:00:00
+MSG-TKT-2026-000002-003,TKT-2026-000002,CUS-000065,CH-005,The application is slow and frequently crashes.,Negative,0.824,THEME-000001,Performance,2026-02-23T00:00:00
+MSG-TKT-2026-000002-004,TKT-2026-000002,CUS-000089,CH-004,"The support agent was helpful, but the resolution was delayed.",Mixed,0.766,THEME-000002,Customer Support,2026-02-19T00:00:00
+MSG-TKT-2026-000003-001,TKT-2026-000003,CUS-000081,CH-001,I appreciate the improvements to the application.,Positive,0.798,THEME-000003,Feature Request,2026-07-19T00:00:00
+MSG-TKT-2026-000003-002,TKT-2026-000003,CUS-000021,CH-001,The application performance is acceptable.,Neutral,0.81,THEME-000001,Performance,2026-04-15T00:00:00
+MSG-TKT-2026-000003-003,TKT-2026-000003,CUS-000092,CH-005,Customer support has not resolved my issue.,Negative,0.753,THEME-000002,Customer Support,2025-12-27T00:00:00
+MSG-TKT-2026-000003-004,TKT-2026-000003,CUS-000055,CH-002,"The new feature is useful, but it needs more options.",Mixed,0.931,THEME-000003,Feature Request,2025-09-24T00:00:00
+MSG-TKT-2026-000004-001,TKT-2026-000004,CUS-000061,CH-002,The system works perfectly without delays.,Positive,0.938,THEME-000001,Performance,2025-03-02T00:00:00
+MSG-TKT-2026-000004-002,TKT-2026-000004,CUS-000033,CH-003,The team acknowledged my request.,Neutral,0.776,THEME-000002,Customer Support,2026-08-21T00:00:00
+MSG-TKT-2026-000004-003,TKT-2026-000004,CUS-000026,CH-005,I cannot find the feature that I need.,Negative,0.759,THEME-000003,Feature Request,2025-11-19T00:00:00
+MSG-TKT-2026-000004-004,TKT-2026-000004,CUS-000006,CH-003,"The application is fast sometimes, but crashes often.",Mixed,0.83,THEME-000001,Performance,2025-10-11T00:00:00
+MSG-TKT-2026-000005-001,TKT-2026-000005,CUS-000060,CH-005,Customer service was helpful and professional.,Positive,0.835,THEME-000002,Customer Support,2026-10-02T00:00:00
+MSG-TKT-2026-000005-002,TKT-2026-000005,CUS-000023,CH-005,I would like to know more about the available features.,Neutral,0.901,THEME-000003,Feature Request,2026-06-16T00:00:00
+MSG-TKT-2026-000005-003,TKT-2026-000005,CUS-000059,CH-005,Loading takes too long and the system freezes.,Negative,0.844,THEME-000001,Performance,2025-06-10T00:00:00
+MSG-TKT-2026-000005-004,TKT-2026-000005,CUS-000005,CH-004,"The agent was polite, but my problem remains unresolved.",Mixed,0.822,THEME-000002,Customer Support,2025-05-14T00:00:00
+MSG-TKT-2026-000006-001,TKT-2026-000006,CUS-000039,CH-001,The new features are useful and easy to understand.,Positive,0.81,THEME-000003,Feature Request,2025-01-08T00:00:00
+MSG-TKT-2026-000006-002,TKT-2026-000006,CUS-000097,CH-005,The application performance is acceptable.,Neutral,0.815,THEME-000001,Performance,2026-09-27T00:00:00
+MSG-TKT-2026-000006-003,TKT-2026-000006,CUS-000002,CH-003,I waited several days without receiving assistance.,Negative,0.946,THEME-000002,Customer Support,2025-07-10T00:00:00
+MSG-TKT-2026-000006-004,TKT-2026-000006,CUS-000022,CH-003,"I like the update, although some features are missing.",Mixed,0.766,THEME-000003,Feature Request,2026-08-28T00:00:00
+MSG-TKT-2026-000007-001,TKT-2026-000007,CUS-000033,CH-002,The application is fast and performs smoothly.,Positive,0.82,THEME-000001,Performance,2026-02-17T00:00:00
+MSG-TKT-2026-000007-002,TKT-2026-000007,CUS-000046,CH-003,The support ticket is currently being reviewed.,Neutral,0.819,THEME-000002,Customer Support,2025-12-10T00:00:00
+MSG-TKT-2026-000007-003,TKT-2026-000007,CUS-000041,CH-001,The application lacks useful customization options.,Negative,0.899,THEME-000003,Feature Request,2026-10-11T00:00:00
+MSG-TKT-2026-000007-004,TKT-2026-000007,CUS-000023,CH-005,"The system works well, but loading is inconsistent.",Mixed,0.804,THEME-000001,Performance,2025-10-10T00:00:00
+MSG-TKT-2026-000008-001,TKT-2026-000008,CUS-000094,CH-003,The support team resolved my problem quickly.,Positive,0.853,THEME-000002,Customer Support,2026-09-03T00:00:00
+MSG-TKT-2026-000008-002,TKT-2026-000008,CUS-000034,CH-003,I am reviewing the new functionality.,Neutral,0.811,THEME-000003,Feature Request,2026-05-19T00:00:00
+MSG-TKT-2026-000008-003,TKT-2026-000008,CUS-000045,CH-003,Loading takes too long and the system freezes.,Negative,0.842,THEME-000001,Performance,2026-01-11T00:00:00
+MSG-TKT-2026-000008-004,TKT-2026-000008,CUS-000029,CH-004,Support responded quickly but did not solve the issue.,Mixed,0.966,THEME-000002,Customer Support,2025-05-15T00:00:00
+MSG-TKT-2026-000009-001,TKT-2026-000009,CUS-000010,CH-005,The new features are useful and easy to understand.,Positive,0.894,THEME-000003,Feature Request,2026-06-13T00:00:00
+MSG-TKT-2026-000009-002,TKT-2026-000009,CUS-000075,CH-005,The application performance is acceptable.,Neutral,0.973,THEME-000001,Performance,2026-08-22T00:00:00
+MSG-TKT-2026-000009-003,TKT-2026-000009,CUS-000024,CH-002,Nobody responded to my support request.,Negative,0.851,THEME-000002,Customer Support,2026-03-13T00:00:00
+MSG-TKT-2026-000009-004,TKT-2026-000009,CUS-000098,CH-001,"The feature is helpful, but it could be improved.",Mixed,0.868,THEME-000003,Feature Request,2025-02-06T00:00:00
+MSG-TKT-2026-000010-001,TKT-2026-000010,CUS-000099,CH-002,The system works perfectly without delays.,Positive,0.788,THEME-000001,Performance,2025-01-03T00:00:00
+MSG-TKT-2026-000010-002,TKT-2026-000010,CUS-000037,CH-003,The team acknowledged my request.,Neutral,0.813,THEME-000002,Customer Support,2026-03-01T00:00:00
+MSG-TKT-2026-000010-003,TKT-2026-000010,CUS-000004,CH-003,The application lacks useful customization options.,Negative,0.84,THEME-000003,Feature Request,2026-04-11T00:00:00
+MSG-TKT-2026-000010-004,TKT-2026-000010,CUS-000096,CH-001,"The application is fast sometimes, but crashes often.",Mixed,0.754,THEME-000001,Performance,2025-12-31T00:00:00
+MSG-TKT-2026-000011-001,TKT-2026-000011,CUS-000043,CH-004,The support team resolved my problem quickly.,Positive,0.898,THEME-000002,Customer Support,2026-09-17T00:00:00
+MSG-TKT-2026-000011-002,TKT-2026-000011,CUS-000052,CH-004,The feature is currently available in the application.,Neutral,0.982,THEME-000003,Feature Request,2025-05-20T00:00:00
+MSG-TKT-2026-000011-003,TKT-2026-000011,CUS-000071,CH-002,The dashboard is extremely slow.,Negative,0.927,THEME-000001,Performance,2026-04-02T00:00:00
+MSG-TKT-2026-000011-004,TKT-2026-000011,CUS-000065,CH-003,"The support agent was helpful, but the resolution was delayed.",Mixed,0.846,THEME-000002,Customer Support,2026-04-05T00:00:00
+MSG-TKT-2026-000012-001,TKT-2026-000012,CUS-000017,CH-002,The latest feature makes my work easier.,Positive,0.893,THEME-000003,Feature Request,2025-08-28T00:00:00
+MSG-TKT-2026-000012-002,TKT-2026-000012,CUS-000100,CH-001,The loading speed is average.,Neutral,0.867,THEME-000001,Performance,2025-10-24T00:00:00
+MSG-TKT-2026-000012-003,TKT-2026-000012,CUS-000094,CH-003,Nobody responded to my support request.,Negative,0.936,THEME-000002,Customer Support,2025-05-10T00:00:00
+MSG-TKT-2026-000012-004,TKT-2026-000012,CUS-000036,CH-005,"I like the update, although some features are missing.",Mixed,0.836,THEME-000003,Feature Request,2026-04-17T00:00:00
+MSG-TKT-2026-000013-001,TKT-2026-000013,CUS-000069,CH-005,The application is fast and performs smoothly.,Positive,0.838,THEME-000001,Performance,2025-10-29T00:00:00
+MSG-TKT-2026-000013-002,TKT-2026-000013,CUS-000010,CH-001,I received a response from customer support.,Neutral,0.964,THEME-000002,Customer Support,2025-07-28T00:00:00
+MSG-TKT-2026-000013-003,TKT-2026-000013,CUS-000056,CH-003,The application lacks useful customization options.,Negative,0.941,THEME-000003,Feature Request,2025-11-04T00:00:00
+MSG-TKT-2026-000013-004,TKT-2026-000013,CUS-000071,CH-001,The latest update improved speed but introduced errors.,Mixed,0.912,THEME-000001,Performance,2025-12-30T00:00:00
+MSG-TKT-2026-000014-001,TKT-2026-000014,CUS-000074,CH-003,The support agent was very understanding.,Positive,0.856,THEME-000002,Customer Support,2025-01-09T00:00:00
+MSG-TKT-2026-000014-002,TKT-2026-000014,CUS-000067,CH-001,I am reviewing the new functionality.,Neutral,0.813,THEME-000003,Feature Request,2025-04-27T00:00:00
+MSG-TKT-2026-000014-003,TKT-2026-000014,CUS-000058,CH-001,The dashboard is extremely slow.,Negative,0.891,THEME-000001,Performance,2026-10-19T00:00:00
+MSG-TKT-2026-000014-004,TKT-2026-000014,CUS-000037,CH-001,Support responded quickly but did not solve the issue.,Mixed,0.883,THEME-000002,Customer Support,2025-11-06T00:00:00
+MSG-TKT-2026-000015-001,TKT-2026-000015,CUS-000052,CH-004,The new features are useful and easy to understand.,Positive,0.944,THEME-000003,Feature Request,2026-08-26T00:00:00
+MSG-TKT-2026-000015-002,TKT-2026-000015,CUS-000022,CH-005,The loading speed is average.,Neutral,0.914,THEME-000001,Performance,2025-08-27T00:00:00
+MSG-TKT-2026-000015-003,TKT-2026-000015,CUS-000080,CH-004,Customer support has not resolved my issue.,Negative,0.895,THEME-000002,Customer Support,2025-01-23T00:00:00
+MSG-TKT-2026-000015-004,TKT-2026-000015,CUS-000018,CH-005,"The feature is helpful, but it could be improved.",Mixed,0.782,THEME-000003,Feature Request,2026-02-02T00:00:00
+MSG-TKT-2026-000016-001,TKT-2026-000016,CUS-000083,CH-005,The system works perfectly without delays.,Positive,0.844,THEME-000001,Performance,2025-01-18T00:00:00
+MSG-TKT-2026-000016-002,TKT-2026-000016,CUS-000048,CH-003,The team acknowledged my request.,Neutral,0.943,THEME-000002,Customer Support,2025-05-08T00:00:00
+MSG-TKT-2026-000016-003,TKT-2026-000016,CUS-000089,CH-002,The application is missing important features.,Negative,0.821,THEME-000003,Feature Request,2025-09-11T00:00:00
+MSG-TKT-2026-000016-004,TKT-2026-000016,CUS-000042,CH-002,The latest update improved speed but introduced errors.,Mixed,0.879,THEME-000001,Performance,2025-04-02T00:00:00
+MSG-TKT-2026-000017-001,TKT-2026-000017,CUS-000024,CH-004,Customer service was helpful and professional.,Positive,0.825,THEME-000002,Customer Support,2025-04-08T00:00:00
+MSG-TKT-2026-000017-002,TKT-2026-000017,CUS-000095,CH-004,The feature is currently available in the application.,Neutral,0.751,THEME-000003,Feature Request,2026-01-14T00:00:00
+MSG-TKT-2026-000017-003,TKT-2026-000017,CUS-000084,CH-002,Loading takes too long and the system freezes.,Negative,0.893,THEME-000001,Performance,2026-07-03T00:00:00
+MSG-TKT-2026-000017-004,TKT-2026-000017,CUS-000089,CH-003,"The support agent was helpful, but the resolution was delayed.",Mixed,0.93,THEME-000002,Customer Support,2025-02-11T00:00:00
+MSG-TKT-2026-000018-001,TKT-2026-000018,CUS-000071,CH-003,I appreciate the improvements to the application.,Positive,0.814,THEME-000003,Feature Request,2025-05-01T00:00:00
+MSG-TKT-2026-000018-002,TKT-2026-000018,CUS-000022,CH-005,The system is operating normally.,Neutral,0.947,THEME-000001,Performance,2026-07-29T00:00:00
+MSG-TKT-2026-000018-003,TKT-2026-000018,CUS-000014,CH-001,I waited several days without receiving assistance.,Negative,0.852,THEME-000002,Customer Support,2026-10-30T00:00:00
+MSG-TKT-2026-000018-004,TKT-2026-000018,CUS-000031,CH-005,"The feature is helpful, but it could be improved.",Mixed,0.936,THEME-000003,Feature Request,2026-09-13T00:00:00
+MSG-TKT-2026-000019-001,TKT-2026-000019,CUS-000062,CH-004,Loading speed has improved significantly.,Positive,0.754,THEME-000001,Performance,2025-05-26T00:00:00
+MSG-TKT-2026-000019-002,TKT-2026-000019,CUS-000042,CH-005,The support ticket is currently being reviewed.,Neutral,0.856,THEME-000002,Customer Support,2025-02-02T00:00:00
+MSG-TKT-2026-000019-003,TKT-2026-000019,CUS-000069,CH-003,The application is missing important features.,Negative,0.88,THEME-000003,Feature Request,2026-10-14T00:00:00
+MSG-TKT-2026-000019-004,TKT-2026-000019,CUS-000017,CH-005,"The system works well, but loading is inconsistent.",Mixed,0.875,THEME-000001,Performance,2026-09-04T00:00:00
+MSG-TKT-2026-000020-001,TKT-2026-000020,CUS-000042,CH-003,Customer service was helpful and professional.,Positive,0.967,THEME-000002,Customer Support,2025-01-01T00:00:00
+MSG-TKT-2026-000020-002,TKT-2026-000020,CUS-000021,CH-005,I would like to know more about the available features.,Neutral,0.931,THEME-000003,Feature Request,2025-10-18T00:00:00
+MSG-TKT-2026-000020-003,TKT-2026-000020,CUS-000044,CH-003,The dashboard is extremely slow.,Negative,0.89,THEME-000001,Performance,2026-08-13T00:00:00
+MSG-TKT-2026-000020-004,TKT-2026-000020,CUS-000063,CH-004,"The agent was polite, but my problem remains unresolved.",Mixed,0.886,THEME-000002,Customer Support,2025-11-26T00:00:00
+MSG-TKT-2026-000021-001,TKT-2026-000021,CUS-000084,CH-001,The latest feature makes my work easier.,Positive,0.911,THEME-000003,Feature Request,2026-10-28T00:00:00
+MSG-TKT-2026-000021-002,TKT-2026-000021,CUS-000040,CH-004,The system is operating normally.,Neutral,0.83,THEME-000001,Performance,2026-03-25T00:00:00
+MSG-TKT-2026-000021-003,TKT-2026-000021,CUS-000019,CH-005,Nobody responded to my support request.,Negative,0.772,THEME-000002,Customer Support,2025-11-12T00:00:00
+MSG-TKT-2026-000021-004,TKT-2026-000021,CUS-000063,CH-001,"The feature is helpful, but it could be improved.",Mixed,0.929,THEME-000003,Feature Request,2025-12-26T00:00:00
+MSG-TKT-2026-000022-001,TKT-2026-000022,CUS-000011,CH-004,The system works perfectly without delays.,Positive,0.888,THEME-000001,Performance,2026-04-17T00:00:00
+MSG-TKT-2026-000022-002,TKT-2026-000022,CUS-000046,CH-005,The support ticket is currently being reviewed.,Neutral,0.844,THEME-000002,Customer Support,2026-10-27T00:00:00
+MSG-TKT-2026-000022-003,TKT-2026-000022,CUS-000031,CH-004,I cannot find the feature that I need.,Negative,0.781,THEME-000003,Feature Request,2026-01-17T00:00:00
+MSG-TKT-2026-000022-004,TKT-2026-000022,CUS-000040,CH-003,The latest update improved speed but introduced errors.,Mixed,0.955,THEME-000001,Performance,2026-03-05T00:00:00
+MSG-TKT-2026-000023-001,TKT-2026-000023,CUS-000019,CH-001,The support agent was very understanding.,Positive,0.934,THEME-000002,Customer Support,2025-07-11T00:00:00
+MSG-TKT-2026-000023-002,TKT-2026-000023,CUS-000010,CH-003,The feature is currently available in the application.,Neutral,0.796,THEME-000003,Feature Request,2025-07-04T00:00:00
+MSG-TKT-2026-000023-003,TKT-2026-000023,CUS-000040,CH-002,Loading takes too long and the system freezes.,Negative,0.888,THEME-000001,Performance,2025-11-10T00:00:00
+MSG-TKT-2026-000023-004,TKT-2026-000023,CUS-000013,CH-003,"The agent was polite, but my problem remains unresolved.",Mixed,0.784,THEME-000002,Customer Support,2025-10-07T00:00:00
+MSG-TKT-2026-000024-001,TKT-2026-000024,CUS-000012,CH-002,I appreciate the improvements to the application.,Positive,0.967,THEME-000003,Feature Request,2025-05-28T00:00:00
+MSG-TKT-2026-000024-002,TKT-2026-000024,CUS-000033,CH-003,The application performance is acceptable.,Neutral,0.938,THEME-000001,Performance,2025-08-20T00:00:00
+MSG-TKT-2026-000024-003,TKT-2026-000024,CUS-000003,CH-002,Nobody responded to my support request.,Negative,0.907,THEME-000002,Customer Support,2025-03-08T00:00:00
+MSG-TKT-2026-000024-004,TKT-2026-000024,CUS-000067,CH-001,"I like the update, although some features are missing.",Mixed,0.961,THEME-000003,Feature Request,2025-04-09T00:00:00
+MSG-TKT-2026-000025-001,TKT-2026-000025,CUS-000081,CH-001,"App chennagide, but sometimes it is very slow.",Positive,0.862,THEME-000001,Performance,2026-10-19T00:00:00
+MSG-TKT-2026-000025-002,TKT-2026-000025,CUS-000011,CH-004,The team acknowledged my request.,Neutral,0.934,THEME-000002,Customer Support,2025-10-08T00:00:00
+MSG-TKT-2026-000025-003,TKT-2026-000025,CUS-000062,CH-005,The application lacks useful customization options.,Negative,0.794,THEME-000003,Feature Request,2025-10-05T00:00:00
+MSG-TKT-2026-000025-004,TKT-2026-000025,CUS-000052,CH-003,"The application is fast sometimes, but crashes often.",Mixed,0.878,THEME-000001,Performance,2025-11-28T00:00:00
+MSG-TKT-2026-000026-001,TKT-2026-000026,CUS-000022,CH-002,The support agent was very understanding.,Positive,0.804,THEME-000002,Customer Support,2026-02-04T00:00:00
+MSG-TKT-2026-000026-002,TKT-2026-000026,CUS-000043,CH-003,The feature is currently available in the application.,Neutral,0.841,THEME-000003,Feature Request,2026-06-24T00:00:00
+MSG-TKT-2026-000026-003,TKT-2026-000026,CUS-000018,CH-005,The dashboard is extremely slow.,Negative,0.799,THEME-000001,Performance,2025-08-07T00:00:00
+MSG-TKT-2026-000026-004,TKT-2026-000026,CUS-000055,CH-004,"The agent was polite, but my problem remains unresolved.",Mixed,0.779,THEME-000002,Customer Support,2025-02-17T00:00:00
+MSG-TKT-2026-000027-001,TKT-2026-000027,CUS-000090,CH-005,The new features are useful and easy to understand.,Positive,0.861,THEME-000003,Feature Request,2025-05-21T00:00:00
+MSG-TKT-2026-000027-002,TKT-2026-000027,CUS-000034,CH-002,The application performance is acceptable.,Neutral,0.795,THEME-000001,Performance,2026-04-28T00:00:00
+MSG-TKT-2026-000027-003,TKT-2026-000027,CUS-000058,CH-003,Nobody responded to my support request.,Negative,0.786,THEME-000002,Customer Support,2026-06-28T00:00:00
+MSG-TKT-2026-000027-004,TKT-2026-000027,CUS-000089,CH-005,"I like the update, although some features are missing.",Mixed,0.797,THEME-000003,Feature Request,2026-08-20T00:00:00
+MSG-TKT-2026-000028-001,TKT-2026-000028,CUS-000048,CH-003,The application is fast and performs smoothly.,Positive,0.889,THEME-000001,Performance,2025-08-20T00:00:00
+MSG-TKT-2026-000028-002,TKT-2026-000028,CUS-000004,CH-001,The support ticket is currently being reviewed.,Neutral,0.901,THEME-000002,Customer Support,2025-07-29T00:00:00
+MSG-TKT-2026-000028-003,TKT-2026-000028,CUS-000017,CH-002,The application is missing important features.,Negative,0.801,THEME-000003,Feature Request,2026-05-15T00:00:00
+MSG-TKT-2026-000028-004,TKT-2026-000028,CUS-000014,CH-005,"The system works well, but loading is inconsistent.",Mixed,0.786,THEME-000001,Performance,2025-04-18T00:00:00
+MSG-TKT-2026-000029-001,TKT-2026-000029,CUS-000100,CH-001,"Great, I have to contact support for the third time.",Positive,0.864,THEME-000002,Customer Support,2025-12-13T00:00:00
+MSG-TKT-2026-000029-002,TKT-2026-000029,CUS-000040,CH-005,I would like to know more about the available features.,Neutral,0.855,THEME-000003,Feature Request,2026-02-02T00:00:00
+MSG-TKT-2026-000029-003,TKT-2026-000029,CUS-000021,CH-004,The dashboard is extremely slow.,Negative,0.909,THEME-000001,Performance,2025-06-07T00:00:00
+MSG-TKT-2026-000029-004,TKT-2026-000029,CUS-000054,CH-004,Support responded quickly but did not solve the issue.,Mixed,0.824,THEME-000002,Customer Support,2026-06-09T00:00:00
+MSG-TKT-2026-000030-001,TKT-2026-000030,CUS-000018,CH-003,The new features are useful and easy to understand.,Positive,0.822,THEME-000003,Feature Request,2025-02-20T00:00:00
+MSG-TKT-2026-000030-002,TKT-2026-000030,CUS-000055,CH-002,The application performance is acceptable.,Neutral,0.906,THEME-000001,Performance,2026-06-03T00:00:00
+MSG-TKT-2026-000030-003,TKT-2026-000030,CUS-000075,CH-003,I waited several days without receiving assistance.,Negative,0.808,THEME-000002,Customer Support,2026-06-03T00:00:00
+MSG-TKT-2026-000030-004,TKT-2026-000030,CUS-000041,CH-002,"The new feature is useful, but it needs more options.",Mixed,0.962,THEME-000003,Feature Request,2026-04-23T00:00:00
+MSG-TKT-2026-000031-001,TKT-2026-000031,CUS-000078,CH-004,The system works perfectly without delays.,Positive,0.916,THEME-000001,Performance,2026-04-23T00:00:00
+MSG-TKT-2026-000031-002,TKT-2026-000031,CUS-000094,CH-005,The team acknowledged my request.,Neutral,0.895,THEME-000002,Customer Support,2025-11-14T00:00:00
+MSG-TKT-2026-000031-003,TKT-2026-000031,CUS-000061,CH-003,The application is missing important features.,Negative,0.774,THEME-000003,Feature Request,2025-02-04T00:00:00
+MSG-TKT-2026-000031-004,TKT-2026-000031,CUS-000001,CH-002,The latest update improved speed but introduced errors.,Mixed,0.885,THEME-000001,Performance,2026-02-01T00:00:00
+MSG-TKT-2026-000032-001,TKT-2026-000032,CUS-000080,CH-005,The support team resolved my problem quickly.,Positive,0.855,THEME-000002,Customer Support,2025-06-17T00:00:00
+MSG-TKT-2026-000032-002,TKT-2026-000032,CUS-000049,CH-002,I would like to know more about the available features.,Neutral,0.878,THEME-000003,Feature Request,2026-04-15T00:00:00
+MSG-TKT-2026-000032-003,TKT-2026-000032,CUS-000075,CH-003,The application is slow and frequently crashes.,Negative,0.921,THEME-000001,Performance,2026-04-29T00:00:00
+MSG-TKT-2026-000032-004,TKT-2026-000032,CUS-000004,CH-001,"The support agent was helpful, but the resolution was delayed.",Mixed,0.905,THEME-000002,Customer Support,2026-01-26T00:00:00
+MSG-TKT-2026-000033-001,TKT-2026-000033,CUS-000067,CH-001,The new features are useful and easy to understand.,Positive,0.811,THEME-000003,Feature Request,2025-12-25T00:00:00
+MSG-TKT-2026-000033-002,TKT-2026-000033,CUS-000045,CH-001,The application performance is acceptable.,Neutral,0.978,THEME-000001,Performance,2026-04-28T00:00:00
+MSG-TKT-2026-000033-003,TKT-2026-000033,CUS-000007,CH-001,Nobody responded to my support request.,Negative,0.911,THEME-000002,Customer Support,2025-02-03T00:00:00
+MSG-TKT-2026-000033-004,TKT-2026-000033,CUS-000079,CH-003,"I like the update, although some features are missing.",Mixed,0.809,THEME-000003,Feature Request,2025-03-24T00:00:00
+MSG-TKT-2026-000034-001,TKT-2026-000034,CUS-000035,CH-004,The application is fast and performs smoothly.,Positive,0.985,THEME-000001,Performance,2026-02-14T00:00:00
+MSG-TKT-2026-000034-002,TKT-2026-000034,CUS-000093,CH-005,I received a response from customer support.,Neutral,0.849,THEME-000002,Customer Support,2026-06-23T00:00:00
+MSG-TKT-2026-000034-003,TKT-2026-000034,CUS-000025,CH-003,The application lacks useful customization options.,Negative,0.856,THEME-000003,Feature Request,2026-01-17T00:00:00
+MSG-TKT-2026-000034-004,TKT-2026-000034,CUS-000001,CH-001,"The system works well, but loading is inconsistent.",Mixed,0.774,THEME-000001,Performance,2025-09-19T00:00:00
+MSG-TKT-2026-000035-001,TKT-2026-000035,CUS-000078,CH-002,The support agent was very understanding.,Positive,0.96,THEME-000002,Customer Support,2025-07-14T00:00:00
+MSG-TKT-2026-000035-002,TKT-2026-000035,CUS-000080,CH-004,I am reviewing the new functionality.,Neutral,0.967,THEME-000003,Feature Request,2025-12-26T00:00:00
+MSG-TKT-2026-000035-003,TKT-2026-000035,CUS-000055,CH-004,The application is slow and frequently crashes.,Negative,0.836,THEME-000001,Performance,2025-07-16T00:00:00
+MSG-TKT-2026-000035-004,TKT-2026-000035,CUS-000077,CH-005,"The agent was polite, but my problem remains unresolved.",Mixed,0.91,THEME-000002,Customer Support,2026-06-11T00:00:00
+MSG-TKT-2026-000036-001,TKT-2026-000036,CUS-000028,CH-005,The new features are useful and easy to understand.,Positive,0.755,THEME-000003,Feature Request,2026-06-28T00:00:00
+MSG-TKT-2026-000036-002,TKT-2026-000036,CUS-000003,CH-004,The application performance is acceptable.,Neutral,0.934,THEME-000001,Performance,2025-11-28T00:00:00
+MSG-TKT-2026-000036-003,TKT-2026-000036,CUS-000050,CH-005,Customer support has not resolved my issue.,Negative,0.78,THEME-000002,Customer Support,2026-04-17T00:00:00
+MSG-TKT-2026-000036-004,TKT-2026-000036,CUS-000056,CH-002,"The new feature is useful, but it needs more options.",Mixed,0.754,THEME-000003,Feature Request,2025-04-28T00:00:00
+MSG-TKT-2026-000037-001,TKT-2026-000037,CUS-000043,CH-003,The application is fast and performs smoothly.,Positive,0.84,THEME-000001,Performance,2026-08-14T00:00:00
+MSG-TKT-2026-000037-002,TKT-2026-000037,CUS-000095,CH-003,I received a response from customer support.,Neutral,0.758,THEME-000002,Customer Support,2025-02-02T00:00:00
+MSG-TKT-2026-000037-003,TKT-2026-000037,CUS-000019,CH-001,I cannot find the feature that I need.,Negative,0.808,THEME-000003,Feature Request,2026-05-22T00:00:00
+MSG-TKT-2026-000037-004,TKT-2026-000037,CUS-000042,CH-004,The latest update improved speed but introduced errors.,Mixed,0.986,THEME-000001,Performance,2025-08-28T00:00:00
+MSG-TKT-2026-000038-001,TKT-2026-000038,CUS-000019,CH-002,Customer service was helpful and professional.,Positive,0.793,THEME-000002,Customer Support,2026-08-19T00:00:00
+MSG-TKT-2026-000038-002,TKT-2026-000038,CUS-000097,CH-005,The feature is currently available in the application.,Neutral,0.845,THEME-000003,Feature Request,2025-06-22T00:00:00
+MSG-TKT-2026-000038-003,TKT-2026-000038,CUS-000060,CH-003,Loading takes too long and the system freezes.,Negative,0.856,THEME-000001,Performance,2025-05-08T00:00:00
+MSG-TKT-2026-000038-004,TKT-2026-000038,CUS-000077,CH-003,Support responded quickly but did not solve the issue.,Mixed,0.767,THEME-000002,Customer Support,2025-02-21T00:00:00
+MSG-TKT-2026-000039-001,TKT-2026-000039,CUS-000072,CH-002,The latest feature makes my work easier.,Positive,0.964,THEME-000003,Feature Request,2026-03-23T00:00:00
+MSG-TKT-2026-000039-002,TKT-2026-000039,CUS-000013,CH-003,The application performance is acceptable.,Neutral,0.907,THEME-000001,Performance,2026-04-10T00:00:00
+MSG-TKT-2026-000039-003,TKT-2026-000039,CUS-000091,CH-001,Nobody responded to my support request.,Negative,0.801,THEME-000002,Customer Support,2026-02-17T00:00:00
+MSG-TKT-2026-000039-004,TKT-2026-000039,CUS-000059,CH-001,"The new feature is useful, but it needs more options.",Mixed,0.856,THEME-000003,Feature Request,2026-02-24T00:00:00
+MSG-TKT-2026-000040-001,TKT-2026-000040,CUS-000079,CH-004,The application is fast and performs smoothly.,Positive,0.853,THEME-000001,Performance,2026-07-02T00:00:00
+MSG-TKT-2026-000040-002,TKT-2026-000040,CUS-000076,CH-003,The support ticket is currently being reviewed.,Neutral,0.956,THEME-000002,Customer Support,2026-10-19T00:00:00
+MSG-TKT-2026-000040-003,TKT-2026-000040,CUS-000035,CH-004,The application is missing important features.,Negative,0.987,THEME-000003,Feature Request,2025-01-27T00:00:00
+MSG-TKT-2026-000040-004,TKT-2026-000040,CUS-000055,CH-004,"The application is fast sometimes, but crashes often.",Mixed,0.801,THEME-000001,Performance,2025-05-30T00:00:00
+MSG-TKT-2026-000041-001,TKT-2026-000041,CUS-000028,CH-005,Customer service was helpful and professional.,Positive,0.764,THEME-000002,Customer Support,2025-02-12T00:00:00
+MSG-TKT-2026-000041-002,TKT-2026-000041,CUS-000040,CH-005,I am reviewing the new functionality.,Neutral,0.912,THEME-000003,Feature Request,2025-10-26T00:00:00
+MSG-TKT-2026-000041-003,TKT-2026-000041,CUS-000094,CH-001,The application is slow and frequently crashes.,Negative,0.809,THEME-000001,Performance,2026-08-31T00:00:00
+MSG-TKT-2026-000041-004,TKT-2026-000041,CUS-000010,CH-005,Support responded quickly but did not solve the issue.,Mixed,0.834,THEME-000002,Customer Support,2025-02-08T00:00:00
+MSG-TKT-2026-000042-001,TKT-2026-000042,CUS-000003,CH-005,The latest feature makes my work easier.,Positive,0.802,THEME-000003,Feature Request,2025-12-04T00:00:00
+MSG-TKT-2026-000042-002,TKT-2026-000042,CUS-000068,CH-002,The application performance is acceptable.,Neutral,0.792,THEME-000001,Performance,2025-04-13T00:00:00
+MSG-TKT-2026-000042-003,TKT-2026-000042,CUS-000030,CH-004,Nobody responded to my support request.,Negative,0.87,THEME-000002,Customer Support,2025-07-20T00:00:00
+MSG-TKT-2026-000042-004,TKT-2026-000042,CUS-000061,CH-005,"The feature is helpful, but it could be improved.",Mixed,0.846,THEME-000003,Feature Request,2026-07-15T00:00:00
+MSG-TKT-2026-000043-001,TKT-2026-000043,CUS-000073,CH-003,The application is fast and performs smoothly.,Positive,0.822,THEME-000001,Performance,2026-09-19T00:00:00
+MSG-TKT-2026-000043-002,TKT-2026-000043,CUS-000019,CH-001,I received a response from customer support.,Neutral,0.982,THEME-000002,Customer Support,2026-05-16T00:00:00
+MSG-TKT-2026-000043-003,TKT-2026-000043,CUS-000071,CH-003,I cannot find the feature that I need.,Negative,0.838,THEME-000003,Feature Request,2025-01-16T00:00:00
+MSG-TKT-2026-000043-004,TKT-2026-000043,CUS-000028,CH-005,"The system works well, but loading is inconsistent.",Mixed,0.961,THEME-000001,Performance,2025-02-16T00:00:00
+MSG-TKT-2026-000044-001,TKT-2026-000044,CUS-000028,CH-002,The support agent was very understanding.,Positive,0.842,THEME-000002,Customer Support,2025-02-03T00:00:00
+MSG-TKT-2026-000044-002,TKT-2026-000044,CUS-000043,CH-003,The feature is currently available in the application.,Neutral,0.756,THEME-000003,Feature Request,2026-03-28T00:00:00
+MSG-TKT-2026-000044-003,TKT-2026-000044,CUS-000052,CH-003,The dashboard is extremely slow.,Negative,0.772,THEME-000001,Performance,2026-05-20T00:00:00
+MSG-TKT-2026-000044-004,TKT-2026-000044,CUS-000007,CH-004,Support responded quickly but did not solve the issue.,Mixed,0.971,THEME-000002,Customer Support,2025-12-28T00:00:00
+MSG-TKT-2026-000045-001,TKT-2026-000045,CUS-000090,CH-005,The latest feature makes my work easier.,Positive,0.845,THEME-000003,Feature Request,2025-08-10T00:00:00
+MSG-TKT-2026-000045-002,TKT-2026-000045,CUS-000042,CH-001,The application performance is acceptable.,Neutral,0.98,THEME-000001,Performance,2025-05-18T00:00:00
+MSG-TKT-2026-000045-003,TKT-2026-000045,CUS-000089,CH-001,I waited several days without receiving assistance.,Negative,0.795,THEME-000002,Customer Support,2025-10-26T00:00:00
+MSG-TKT-2026-000045-004,TKT-2026-000045,CUS-000056,CH-004,"The feature is helpful, but it could be improved.",Mixed,0.776,THEME-000003,Feature Request,2026-02-03T00:00:00
+MSG-TKT-2026-000046-001,TKT-2026-000046,CUS-000060,CH-004,The system works perfectly without delays.,Positive,0.751,THEME-000001,Performance,2026-06-01T00:00:00
+MSG-TKT-2026-000046-002,TKT-2026-000046,CUS-000096,CH-001,The team acknowledged my request.,Neutral,0.782,THEME-000002,Customer Support,2026-01-10T00:00:00
+MSG-TKT-2026-000046-003,TKT-2026-000046,CUS-000038,CH-005,The application is missing important features.,Negative,0.834,THEME-000003,Feature Request,2025-09-24T00:00:00
+MSG-TKT-2026-000046-004,TKT-2026-000046,CUS-000076,CH-004,"The system works well, but loading is inconsistent.",Mixed,0.912,THEME-000001,Performance,2025-07-19T00:00:00
+MSG-TKT-2026-000047-001,TKT-2026-000047,CUS-000073,CH-003,The support team resolved my problem quickly.,Positive,0.873,THEME-000002,Customer Support,2025-05-15T00:00:00
+MSG-TKT-2026-000047-002,TKT-2026-000047,CUS-000096,CH-001,I would like to know more about the available features.,Neutral,0.776,THEME-000003,Feature Request,2025-08-16T00:00:00
+MSG-TKT-2026-000047-003,TKT-2026-000047,CUS-000045,CH-001,Loading takes too long and the system freezes.,Negative,0.914,THEME-000001,Performance,2025-02-25T00:00:00
+MSG-TKT-2026-000047-004,TKT-2026-000047,CUS-000010,CH-003,Support responded quickly but did not solve the issue.,Mixed,0.805,THEME-000002,Customer Support,2025-03-05T00:00:00
+MSG-TKT-2026-000048-001,TKT-2026-000048,CUS-000026,CH-005,I appreciate the improvements to the application.,Positive,0.836,THEME-000003,Feature Request,2025-10-29T00:00:00
+MSG-TKT-2026-000048-002,TKT-2026-000048,CUS-000051,CH-004,The application performance is acceptable.,Neutral,0.783,THEME-000001,Performance,2025-05-28T00:00:00
+MSG-TKT-2026-000048-003,TKT-2026-000048,CUS-000015,CH-005,Nobody responded to my support request.,Negative,0.752,THEME-000002,Customer Support,2026-10-25T00:00:00
+MSG-TKT-2026-000048-004,TKT-2026-000048,CUS-000040,CH-004,"I like the update, although some features are missing.",Mixed,0.984,THEME-000003,Feature Request,2025-12-21T00:00:00
+MSG-TKT-2026-000049-001,TKT-2026-000049,CUS-000033,CH-005,Loading speed has improved significantly.,Positive,0.895,THEME-000001,Performance,2026-01-02T00:00:00
+MSG-TKT-2026-000049-002,TKT-2026-000049,CUS-000019,CH-001,"La aplicación funciona bien, but loading takes too long.",Neutral,0.818,THEME-000002,Customer Support,2026-05-12T00:00:00
+MSG-TKT-2026-000049-003,TKT-2026-000049,CUS-000035,CH-001,I cannot find the feature that I need.,Negative,0.909,THEME-000003,Feature Request,2026-01-28T00:00:00
+MSG-TKT-2026-000049-004,TKT-2026-000049,CUS-000051,CH-001,"The system works well, but loading is inconsistent.",Mixed,0.978,THEME-000001,Performance,2025-05-20T00:00:00
+MSG-TKT-2026-000050-001,TKT-2026-000050,CUS-000059,CH-003,The support agent was very understanding.,Positive,0.892,THEME-000002,Customer Support,2026-09-06T00:00:00
+MSG-TKT-2026-000050-002,TKT-2026-000050,CUS-000058,CH-003,I would like to know more about the available features.,Neutral,0.75,THEME-000003,Feature Request,2025-06-26T00:00:00
+MSG-TKT-2026-000050-003,TKT-2026-000050,CUS-000085,CH-002,The dashboard is extremely slow.,Negative,0.874,THEME-000001,Performance,2025-04-15T00:00:00
+MSG-TKT-2026-000050-004,TKT-2026-000050,CUS-000075,CH-001,Support responded quickly but did not solve the issue.,Mixed,0.844,THEME-000002,Customer Support,2025-03-06T00:00:00

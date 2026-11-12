@@ -1,0 +1,24 @@
+{
+  "scale": "full",
+  "seed": 20261022,
+  "generated_at": "2026-11-12T19:39:30.729416",
+  "row_counts": {
+    "customers": 5000,
+    "products": 5,
+    "channels": 5,
+    "surveys": 100,
+    "reviews": 30000,
+    "survey_responses": 20001,
+    "support_messages": 20000,
+    "action_items": 3
+  },
+  "sentiment_counts": {
+    "Positive": 17501,
+    "Neutral": 17500,
+    "Negative": 17500,
+    "Mixed": 17500
+  },
+  "ground_truth_cases": 6,
+  "validation_errors": [],
+  "validation_status": "PASSED"
+}

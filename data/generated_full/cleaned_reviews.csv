@@ -1,0 +1,146 @@
+review_id,text,sentiment
+REV-2026-000002,My request is awaiting a response from the support team.,Neutral
+REV-2026-000003,Very disappointed. The product does not work at all.,Negative
+REV-2026-000004,"Performance has improved, but unexpected freezes continue.",Mixed
+REV-2026-000005,The support team resolved my problem quickly.,Positive
+REV-2026-000006,I have not tried the latest feature yet.,Neutral
+REV-2026-000007,The application stops responding during normal use.,Negative
+REV-2026-000008,"The agent was courteous, but the issue was not resolved.",Mixed
+REV-2026-000009,The application now provides the tools I need.,Positive
+REV-2026-000010,The dashboard displays the requested information.,Neutral
+REV-2026-000011,My issue remains unresolved after several calls.,Negative
+REV-2026-000012,"The feature is helpful, but it could be improved.",Mixed
+REV-2026-000013,The application loads quickly and runs smoothly.,Positive
+REV-2026-000014,The support ticket is currently being reviewed.,Neutral
+REV-2026-000015,I cannot complete my work without the requested feature.,Negative
+REV-2026-000016,"Loading is quicker now, but certain features remain unstable.",Mixed
+REV-2026-000017,The support representative resolved my concern professionally.,Positive
+REV-2026-000019,The latest update has made performance worse.,Negative
+REV-2026-000021,The latest feature makes my work easier.,Positive
+REV-2026-000022,The system performance is similar to last week.,Neutral
+REV-2026-000023,My repeated requests have not received any attention.,Negative
+REV-2026-000024,"The feature saves time, although it has a few limitations.",Mixed
+REV-2026-000025,The improved performance makes daily tasks easier.,Positive
+REV-2026-000026,I received a response from customer support.,Neutral
+REV-2026-000027,I am disappointed that the requested functionality is unavailable.,Negative
+REV-2026-000029,The team followed up and provided a satisfactory solution.,Positive
+REV-2026-000030,The application currently supports several customization options.,Neutral
+REV-2026-000031,The application frequently becomes unresponsive.,Negative
+REV-2026-000032,"The support experience was good, except for the delayed resolution.",Mixed
+REV-2026-000033,The additional filters make searching much easier.,Positive
+REV-2026-000034,The application is functioning as expected.,Neutral
+REV-2026-000035,The representative could not provide a solution.,Negative
+REV-2026-000036,"The new option saves time, but it does not support every use case.",Mixed
+REV-2026-000037,The dashboard responds instantly to my requests.,Positive
+REV-2026-000038,My support request has been registered.,Neutral
+REV-2026-000039,The lack of customization makes the application difficult to use.,Negative
+REV-2026-000040,"The system works well, although loading is inconsistent.",Mixed
+REV-2026-000041,I received a clear solution from the support team.,Positive
+REV-2026-000042,The application includes an additional reporting option.,Neutral
+REV-2026-000043,Slow response times interrupt my daily work.,Negative
+REV-2026-000044,"The team responded quickly, although the solution was incomplete.",Mixed
+REV-2026-000045,The new functionality has made the application more convenient.,Positive
+REV-2026-000049,The application responds quickly to every request.,Positive
+REV-2026-000051,The application is missing important features.,Negative
+REV-2026-000053,The support team handled my request efficiently.,Positive
+REV-2026-000054,The feature is currently available in the application.,Neutral
+REV-2026-000055,Performance problems make the application frustrating to use.,Negative
+REV-2026-000056,Support responded quickly but did not solve the issue.,Mixed
+REV-2026-000057,The new options make the application more flexible.,Positive
+REV-2026-000060,"The update is useful, but the navigation could be simpler.",Mixed
+REV-2026-000062,Customer support provided an update about my case.,Neutral
+REV-2026-000063,The application does not provide the functionality I require.,Negative
+REV-2026-000064,"The dashboard loads faster, but reports still take too long.",Mixed
+REV-2026-000068,"Customer service was friendly, but the waiting time was excessive.",Mixed
+REV-2026-000069,The new feature works exactly as expected.,Positive
+REV-2026-000070,The dashboard takes a few seconds to respond.,Neutral
+REV-2026-000071,I waited several days without receiving assistance.,Negative
+REV-2026-000074,The team confirmed receipt of my complaint.,Neutral
+REV-2026-000075,The missing export option makes reporting difficult.,Negative
+REV-2026-000078,I have submitted a request for an additional feature.,Neutral
+REV-2026-000079,Frequent delays make the application difficult to use.,Negative
+REV-2026-000080,"The agent tried to help, but my issue happened again.",Mixed
+REV-2026-000083,I had to explain the same problem multiple times.,Negative
+REV-2026-000084,"I like the update, although some features are missing.",Mixed
+REV-2026-000087,The application needs better filtering options.,Negative
+REV-2026-000088,"The system responds quickly, although occasional crashes occur.",Mixed
+REV-2026-000090,I am reviewing the new functionality.,Neutral
+REV-2026-000092,"I received a quick response, but the instructions were unclear.",Mixed
+REV-2026-000096,"I appreciate the new functionality, but it needs more flexibility.",Mixed
+REV-2026-000099,The current features are insufficient for my workflow.,Negative
+REV-2026-000101,My issue was resolved during the first conversation.,Positive
+REV-2026-000102,The requested functionality is listed in the feature menu.,Neutral
+REV-2026-000106,The application performance is acceptable.,Neutral
+REV-2026-000108,"The update adds useful tools, although some improvements are still needed.",Mixed
+REV-2026-000110,My support case is currently under investigation.,Neutral
+REV-2026-000112,"The update improved stability, but performance remains inconsistent.",Mixed
+REV-2026-000115,The system takes too long to process requests.,Negative
+REV-2026-000117,The new customization options are very helpful.,Positive
+REV-2026-000118,Performance has remained unchanged this month.,Neutral
+REV-2026-000119,The support team repeatedly ignored my messages.,Negative
+REV-2026-000120,"The functionality is helpful, but the interface is confusing.",Mixed
+REV-2026-000121,The system runs smoothly throughout the day.,Positive
+REV-2026-000126,The customization option is available in settings.,Neutral
+REV-2026-000131,The support team failed to address my complaint.,Negative
+REV-2026-000133,The system remains responsive even during busy periods.,Positive
+REV-2026-000137,The customer service experience was excellent.,Positive
+REV-2026-000141,The latest enhancement is useful and works reliably.,Positive
+REV-2026-000146,The team acknowledged my request.,Neutral
+REV-2026-000147,The available functionality is too limited.,Negative
+REV-2026-000149,The support agent understood my issue immediately.,Positive
+REV-2026-000154,The application takes a normal amount of time to load.,Neutral
+REV-2026-000155,The delayed response caused unnecessary frustration.,Negative
+REV-2026-000158,The ticket is still open.,Neutral
+REV-2026-000162,The feature request has been recorded.,Neutral
+REV-2026-000165,I appreciate the improvements to the application.,Positive
+REV-2026-000168,"The new feature is useful, but it needs more options.",Mixed
+REV-2026-000172,"Navigation is smooth, but some pages remain slow.",Mixed
+REV-2026-000176,"Support provided useful information, but the response arrived late.",Mixed
+REV-2026-000178,The system is operating normally.,Neutral
+REV-2026-000179,The support process was frustrating and time-consuming.,Negative
+REV-2026-000181,I have experienced very few performance issues.,Positive
+REV-2026-000190,The application works at its usual speed.,Neutral
+REV-2026-000191,Nobody responded to my support request.,Negative
+REV-2026-000196,"The application loads quickly, but it crashes occasionally.",Mixed
+REV-2026-000197,The team provided excellent assistance throughout the process.,Positive
+REV-2026-000199,The dashboard becomes extremely slow.,Negative
+REV-2026-000202,The system completed the requested operation.,Neutral
+REV-2026-000205,The application is stable and consistently responsive.,Positive
+REV-2026-000206,I am waiting for the next support update.,Neutral
+REV-2026-000211,Loading takes too long and the system freezes.,Negative
+REV-2026-000213,The additional feature improves my daily workflow.,Positive
+REV-2026-000217,Pages open quickly and navigation feels smooth.,Positive
+REV-2026-000223,The system crashes whenever I open large reports.,Negative
+REV-2026-000231,The application lacks useful customization options.,Negative
+REV-2026-000236,"The support agent was helpful, but the resolution was delayed.",Mixed
+REV-2026-000240,"The additional filters help, but some search options are missing.",Mixed
+REV-2026-000241,The application performs better than before.,Positive
+REV-2026-000261,The updated dashboard provides useful functionality.,Positive
+REV-2026-000265,The system works reliably without unexpected delays.,Positive
+REV-2026-000271,The application is slow and frequently crashes.,Negative
+REV-2026-000276,"The new feature is convenient, but its settings are limited.",Mixed
+REV-2026-000280,The latest update improved speed but introduced errors.,Mixed
+REV-2026-000283,Pages take several minutes to load.,Negative
+REV-2026-000284,"The team understood my concern, although no solution was provided.",Mixed
+REV-2026-000292,"The application works most of the time, but delays still occur.",Mixed
+REV-2026-000294,I would like to know more about the available features.,Neutral
+REV-2026-000298,I have not noticed any major performance changes.,Neutral
+REV-2026-000324,"The new dashboard looks good, but customization is limited.",Mixed
+REV-2026-000328,"The dashboard is faster, although it sometimes stops responding.",Mixed
+REV-2026-000338,The representative requested additional information.,Neutral
+REV-2026-000344,"The representative was polite, but my problem remains unresolved.",Mixed
+REV-2026-000349,The latest update has significantly improved loading speed.,Positive
+REV-2026-000351,The current reporting tools do not meet my requirements.,Negative
+REV-2026-000359,I received no useful response from customer service.,Negative
+REV-2026-000368,"The representative was helpful, but I still need further assistance.",Mixed
+REV-2026-000377,Customer service was helpful and professional.,Positive
+REV-2026-000389,The representative was polite and very helpful.,Positive
+REV-2026-000402,I am considering using the new functionality.,Neutral
+REV-2026-000437,Customer support responded promptly and resolved my concern.,Positive
+REV-2026-000441,The new features are useful and easy to understand.,Positive
+REV-2026-000519,I cannot find the feature that I need.,Negative
+REV-2026-000551,Customer support has not resolved my issue.,Negative
+REV-2026-000580,"The application is generally fast, but some pages load slowly.",Mixed
+REV-2026-000638,The support representative shared the ticket number.,Neutral
+REV-2026-000646,The loading speed is average.,Neutral
+REV-2026-001098,I would like to explore the additional application settings.,Neutral

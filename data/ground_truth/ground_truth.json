@@ -1,0 +1,54 @@
+{
+  "seed": 20261022,
+  "description": "Synthetic evaluation cases. Never use this file as model input or training features.",
+  "cases": [
+    {
+      "record_id": "REV-2026-000001",
+      "record_type": "Review",
+      "issue_type": "Label contradicts text",
+      "expected_decision": "Flag sentiment mismatch",
+      "expected_sentiment": "Negative"
+    },
+    {
+      "record_id": "RESP-SUR-2026-000001-041",
+      "record_type": "SurveyResponse",
+      "issue_type": "Duplicate response",
+      "expected_decision": "Flag duplicate submission",
+      "duplicate_of": "RESP-SUR-2026-000001-001"
+    },
+    {
+      "record_id": "MSG-TKT-2026-000001-001",
+      "record_type": "SupportMessage",
+      "issue_type": "PII leak",
+      "expected_decision": "Flag email address in feedback",
+      "synthetic_value": "test.person@example.com"
+    },
+    {
+      "record_id": "REV-2026-000002",
+      "record_type": "Review",
+      "issue_type": "Out-of-taxonomy theme",
+      "expected_decision": "Flag invalid theme",
+      "invalid_theme": "Billing",
+      "allowed_themes": [
+        "Performance",
+        "Customer Support",
+        "Feature Request"
+      ]
+    },
+    {
+      "record_id": "REV-2026-000003",
+      "record_type": "Review",
+      "issue_type": "Rating-text mismatch",
+      "expected_decision": "Flag rating and text inconsistency",
+      "rating": 5,
+      "expected_sentiment": "Negative"
+    },
+    {
+      "record_id": "LEAKAGE-PROBE-000001",
+      "record_type": "ModelInputProbe",
+      "issue_type": "Test labels included in model input",
+      "expected_decision": "Detect and exclude test_label before feature extraction",
+      "forbidden_feature": "test_label"
+    }
+  ]
+}

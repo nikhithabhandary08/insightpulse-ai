@@ -1,0 +1,5 @@
+sentiment_id,sentiment_name
+SENT-001,Positive
+SENT-002,Neutral
+SENT-003,Negative
+SENT-004,Mixed

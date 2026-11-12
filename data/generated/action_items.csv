@@ -1,0 +1,4 @@
+action_item_id,theme_id,title,description,source_count,negative_percentage,threshold_percentage,priority,status
+ACT-000001,THEME-000001,Investigate Performance feedback,Review 59 negative records out of 235 records.,235,25.11,15.0,High,Open
+ACT-000002,THEME-000002,Investigate Customer Support feedback,Review 57 negative records out of 233 records.,233,24.46,15.0,High,Open
+ACT-000003,THEME-000003,Investigate Feature Request feedback,Review 59 negative records out of 232 records.,232,25.43,15.0,High,Open

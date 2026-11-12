@@ -1,0 +1,53 @@
+{
+  "project": "InsightPulse AI",
+  "generator": "backend/scripts/generate_synthetic_data.py",
+  "seed": 20261022,
+  "scale": "starter",
+  "synthetic_data_only": true,
+  "files": {
+    "action_items.csv": {
+      "sha256": "f461565514e2ecaf3cfc239865897fb385e6c3a8761d6339582a34eac9c92da5",
+      "size_bytes": 512
+    },
+    "channels.csv": {
+      "sha256": "71e5d1f97ab9250ce363fc09e37b8e56de4fdc656ed86c28c8529f4df80f6fbd",
+      "size_bytes": 109
+    },
+    "customers.csv": {
+      "sha256": "50bd9dace60e3ec063b40dbfd7676ee86a76c4b0d8daefdda771906fce185c92",
+      "size_bytes": 8544
+    },
+    "model_input_adversarial.csv": {
+      "sha256": "e98053764da7e02d1987e743a9f8e117248d7980f893ab7288010da28a09ecb4",
+      "size_bytes": 103
+    },
+    "products.csv": {
+      "sha256": "2e2bc7010e3c700d72fbece6cdd8e4083121025f200acbada644760d2aabbdf6",
+      "size_bytes": 219
+    },
+    "reviews.csv": {
+      "sha256": "1fcd0df760f1f148d5e608664cbf3fc9ffd6f345e1a573c310104b4bf557c13d",
+      "size_bytes": 60821
+    },
+    "sentiment_labels.csv": {
+      "sha256": "fab89c9f5a0f6a61d9078aa1e85c9688eb7027b5f59f827896174bfbe63d0129",
+      "size_bytes": 101
+    },
+    "support_messages.csv": {
+      "sha256": "d317e8d0799ecefd18b36cd46e7965ad45fee599440949229652f510e2349572",
+      "size_bytes": 33879
+    },
+    "survey_responses.csv": {
+      "sha256": "a1ed3624171ba1582ccc64c3ecb890482a82a1cdf2179baa304ff8bb03325760",
+      "size_bytes": 49347
+    },
+    "surveys.csv": {
+      "sha256": "b8410fcd4e0240456377022459333fa01624a31c2c8e826c95e639522aaabece",
+      "size_bytes": 376
+    },
+    "themes.csv": {
+      "sha256": "be6f9c18677bb498d388b37ca4531bda2deb19790bcf759929459295f3e8828f",
+      "size_bytes": 225
+    }
+  }
+}
