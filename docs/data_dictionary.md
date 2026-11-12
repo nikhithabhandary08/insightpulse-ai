@@ -306,9 +306,10 @@ ActionItemHistory is planned and is not included as an implemented database rela
 
 ## 8. Required Anomaly Types
 
+
 | Issue type | Expected detection |
 |---|---|
-| Contradictory label | Injected test case for evaluating disagreement between assigned sentiment and feedback text; not currently detected by the anomaly scanner. |
+| Contradictory label / Sentiment-text mismatch | Detect disagreement between the stored sentiment label and the review text. Recorded as `SENTIMENT_TEXT_MISMATCH`. |
 | Duplicate response | Identify repeated survey submissions |
 | PII leakage | Detect email addresses and other personal identifiers |
 | Invalid theme | Detect themes outside the approved taxonomy |

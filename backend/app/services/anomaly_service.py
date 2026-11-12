@@ -95,6 +95,56 @@ def detect_rating_mismatch(rating, text):
 
     return False
 
+def detect_sentiment_mismatch(sentiment, text):
+    """Identify obvious contradictions between sentiment and review text."""
+
+    if not text or not sentiment:
+        return False
+
+    normalized_text = text.lower()
+    normalized_sentiment = sentiment.strip().lower()
+
+    negative_words = [
+        "terrible",
+        "worst",
+        "bad",
+        "poor",
+        "useless",
+        "disappointed",
+        "awful",
+        "horrible",
+        "not working",
+        "very slow",
+        "keeps crashing",
+    ]
+
+    positive_words = [
+        "excellent",
+        "amazing",
+        "excellent service",
+        "love it",
+        "very good",
+        "perfect",
+        "wonderful",
+        "fantastic",
+        "great experience",
+    ]
+
+    has_negative = any(
+        word in normalized_text for word in negative_words
+    )
+
+    has_positive = any(
+        word in normalized_text for word in positive_words
+    )
+
+    if normalized_sentiment == "positive" and has_negative:
+        return True
+
+    if normalized_sentiment == "negative" and has_positive:
+        return True
+
+    return False
 
 def create_anomaly(
     db,
@@ -130,6 +180,7 @@ def create_anomaly(
     return True
 
 
+
 def run_anomaly_detection(db: Session):
     """
     Scan reviews, survey responses and support messages.
@@ -137,6 +188,7 @@ def run_anomaly_detection(db: Session):
     """
 
     detected = defaultdict(int)
+
     themes = {
         theme.theme_name
         for theme in db.query(Theme).all()
@@ -203,6 +255,20 @@ def run_anomaly_detection(db: Session):
             ):
                 detected["RATING_TEXT_MISMATCH"] += 1
 
+        # Sentiment-text mismatch
+        if detect_sentiment_mismatch(review.sentiment, text):
+            if create_anomaly(
+                db,
+                f"ANOM-REV-SENTIMENT-{source_id}",
+                "Review",
+                source_id,
+                "SENTIMENT_TEXT_MISMATCH",
+                "Medium",
+                "Review sentiment appears inconsistent with its text.",
+                f"Stored sentiment: {review.sentiment}",
+            ):
+                detected["SENTIMENT_TEXT_MISMATCH"] += 1
+
     # -------------------------------------------------
     # 2. Survey response checks
     # -------------------------------------------------
@@ -215,6 +281,7 @@ def run_anomaly_detection(db: Session):
         text = response.response_text or ""
         source_id = response.response_id
 
+        # PII detection
         pii_findings = detect_pii(text)
 
         if pii_findings:
@@ -230,6 +297,7 @@ def run_anomaly_detection(db: Session):
             ):
                 detected["PII_LEAK"] += 1
 
+        # Invalid predicted theme
         predicted_theme = response.predicted_theme
 
         if (
@@ -286,6 +354,7 @@ def run_anomaly_detection(db: Session):
         text = message.message_text or ""
         source_id = message.message_id
 
+        # PII detection
         pii_findings = detect_pii(text)
 
         if pii_findings:
@@ -301,6 +370,7 @@ def run_anomaly_detection(db: Session):
             ):
                 detected["PII_LEAK"] += 1
 
+        # Invalid predicted theme
         predicted_theme = message.predicted_theme
 
         if (
