@@ -49,6 +49,22 @@ def train_sentiment_model():
 
     data = pd.read_csv(DATA_PATH)
 
+    forbidden_columns = {
+        "test_label",
+        "ground_truth",
+        "expected_sentiment",
+        "expected_decision",
+        "issue_type",
+    }
+
+    leaked_columns = forbidden_columns.intersection(data.columns)
+
+    if leaked_columns:
+        raise ValueError(
+            "Potential evaluation-data leakage detected. "
+            f"Forbidden columns found: {sorted(leaked_columns)}"
+        )
+    
     # Validate required columns
     required_columns = {"text", "sentiment"}
 
